@@ -381,48 +381,12 @@ export default function TintCarouselLine() {
                   />
                 </div>
 
-                <div className="mobile-page-counter md:hidden">
-                  <span className="mobile-counter-current">{idx + 1}</span>
-                  <span className="mobile-counter-total">/{slides.length}</span>
-                </div>
+
               </div>
             </div>
           </div>
 
-          {/* Page Counter - Bottom Right */}
-          <div
-            className="absolute z-30 tint-page-counter"
-            style={{
-              bottom: "80px",
-              right: "112px",
-              display: "flex",
-              alignItems: "baseline",
-              gap: "4px",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "Oswald",
-                fontSize: "60px",
-                fontWeight: 700,
-                lineHeight: "68px",
-                color: "#FFFFFF",
-              }}
-            >
-              {idx + 1}
-            </span>
-            <span
-              style={{
-                fontFamily: "Oswald",
-                fontSize: "32px",
-                fontWeight: 500,
-                lineHeight: "40px",
-                color: "#A9A9A9",
-              }}
-            >
-              /{slides.length}
-            </span>
-          </div>
+
 
           {/* end of mapped slide content */}
         </section>
@@ -500,8 +464,8 @@ export default function TintCarouselLine() {
             height: auto !important;
             min-height: 800px !important;
             overflow: visible !important; /* permit image to extend beyond */
-            margin-top: 10px !important; /* space above first section on mobile */
-            margin-bottom: 140px !important; /* gap between sections */
+            margin-top: 0px !important; /* reduced gap between sections */
+            margin-bottom: 40px !important; /* reduced gap between sections */
           }
 
           .tint-bg-car {
@@ -530,10 +494,12 @@ export default function TintCarouselLine() {
             margin-right: -50vw !important;
             margin-top: 36px !important;
             margin-bottom: 25px !important;
-            height: auto !important;
+            height: 220px !important;
+            min-height: 220px !important;
+            max-height: 220px !important;
             padding: 0 !important;
             display: block !important;
-            overflow: visible !important;
+            overflow: hidden !important;
             z-index: 5 !important; /* behind content */
           }
 
@@ -546,6 +512,7 @@ export default function TintCarouselLine() {
             object-position: center center !important;
             opacity: 1 !important;
             transform: scale(1.35) !important;
+            transition: opacity 0.5s ease-in-out !important;
           }
 
           .tint-content {

@@ -11,7 +11,6 @@ const packages = {
     filmType: "PVC",
     thickness: "5nm",
     colorOptions: "1500",
-    effectOptions: "3",
     warranty: "2 year",
     price: "288",
     originalPrice: "576",
@@ -22,7 +21,6 @@ const packages = {
     filmType: "Super Film",
     thickness: "10nm",
     colorOptions: "2500",
-    effectOptions: "5",
     warranty: "5 year",
     price: "999",
     originalPrice: "1999",
@@ -30,12 +28,30 @@ const packages = {
 };
 
 const specs = [
-  { key: "filmType", label: "Film Type" },
-  { key: "thickness", label: "Thickness" },
-  { key: "colorOptions", label: "Color Options" },
-  { key: "effectOptions", label: "Effect Options" },
-  { key: "warranty", label: "Warranty" },
+  { key: "colorOptions", label: "Colors" },
 ];
+
+const colorSwatches = [
+  "#FF3B30",
+  "#FF9500",
+  "#FFCC00",
+  "#34C759",
+  "#00C7BE",
+  "#32ADE6",
+  "#007AFF",
+  "#5856D6",
+  "#AF52DE",
+  "#FF2D55",
+  "#8E8E93",
+  "#636366",
+  "#1C1C1E",
+  "#A2845E",
+  "#E5E5EA",
+  "#FFFFFF",
+];
+
+const visibleDesktopSwatches = 6;
+const visibleMobileSwatches = 4;
 
 export default function ExploreOptionsSection() {
   const mobileTableRef = useRef(null);
@@ -57,6 +73,42 @@ export default function ExploreOptionsSection() {
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [bookingData, setBookingData] = useState(null);
   const [selectedPackage, setSelectedPackage] = useState(null);
+  const [swatchStartIndex, setSwatchStartIndex] = useState({
+    silver: 0,
+    platinum: 0,
+  });
+
+  const slideSwatches = (packageKey, direction, isMobile = false) => {
+    const visibleCount = isMobile
+      ? visibleMobileSwatches
+      : visibleDesktopSwatches;
+    const maxStart = Math.max(0, colorSwatches.length - visibleCount);
+
+    setSwatchStartIndex((previous) => {
+      const current = previous[packageKey] ?? 0;
+      const nextValue =
+        direction === "next"
+          ? current >= maxStart
+            ? 0
+            : current + 1
+          : current <= 0
+            ? maxStart
+            : current - 1;
+
+      return {
+        ...previous,
+        [packageKey]: nextValue,
+      };
+    });
+  };
+
+  const getVisibleSwatches = (packageKey, isMobile = false) => {
+    const visibleCount = isMobile
+      ? visibleMobileSwatches
+      : visibleDesktopSwatches;
+    const start = swatchStartIndex[packageKey] ?? 0;
+    return colorSwatches.slice(start, start + visibleCount);
+  };
 
   const handleBookClick = (pkg) => {
     setSelectedPackage(pkg);
@@ -394,6 +446,50 @@ export default function ExploreOptionsSection() {
             color: transparent;
           }
 
+          .wrap-color-slider {
+            width: 100%;
+            padding: 20px 8px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.03);
+          }
+
+          .wrap-color-slider-track {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+          }
+
+          .wrap-color-nav {
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            font-size: 14px;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+          }
+
+          .wrap-color-swatches {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 22px;
+          }
+
+          .wrap-color-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            flex-shrink: 0;
+          }
+
           .wrap-price {
             display: flex;
             gap: 8px;
@@ -690,6 +786,17 @@ export default function ExploreOptionsSection() {
               -webkit-text-fill-color: transparent;
             }
 
+            .wrap-mobile-color-slider {
+              width: 100%;
+              padding: 14px 0;
+              border-top: 1px dashed rgba(255, 255, 255, 0.03);
+            }
+
+            .wrap-mobile-color-slider .wrap-color-dot {
+              width: 18px;
+              height: 18px;
+            }
+
             .wrap-mobile-price {
               display: flex;
               justify-content: space-between;
@@ -757,12 +864,7 @@ export default function ExploreOptionsSection() {
                 </div>
                 {specs.map((spec) => (
                   <div className="wrap-label" key={spec.key}>
-                    <span className="wrap-label-text">
-                      {spec.label}
-                      {["Film Type", "Thickness"].includes(spec.label) && (
-                        <span className="dot">◎</span>
-                      )}
-                    </span>
+                    <span className="wrap-label-text">{spec.label}</span>
                   </div>
                 ))}
                 <div className="wrap-label">
@@ -770,20 +872,44 @@ export default function ExploreOptionsSection() {
                 </div>
               </div>
 
-              {Object.values(packages).map((pkg, i) => (
+              {Object.entries(packages).map(([packageKey, pkg]) => (
                 <div
-                  key={i}
+                  key={packageKey}
                   className={`wrap-package-column ${pkg.highlight ? "highlight" : ""}`}
                 >
                   <div className="wrap-package-header">
                     <span className="wrap-header-text">{pkg.name}</span>
                   </div>
 
-                  <div className="wrap-package-value">{pkg.filmType}</div>
-                  <div className="wrap-package-value">{pkg.thickness}</div>
-                  <div className="wrap-package-value">{pkg.colorOptions}</div>
-                  <div className="wrap-package-value">{pkg.effectOptions}</div>
-                  <div className="wrap-package-value">{pkg.warranty}</div>
+                  <div className="wrap-color-slider">
+                    <div className="wrap-color-slider-track">
+                      <button
+                        type="button"
+                        className="wrap-color-nav"
+                        onClick={() => slideSwatches(packageKey, "prev")}
+                        aria-label="Previous colors"
+                      >
+                        ‹
+                      </button>
+                      <div className="wrap-color-swatches">
+                        {getVisibleSwatches(packageKey).map((colorHex) => (
+                          <span
+                            key={`${packageKey}-${colorHex}`}
+                            className="wrap-color-dot"
+                            style={{ backgroundColor: colorHex }}
+                          />
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        className="wrap-color-nav"
+                        onClick={() => slideSwatches(packageKey, "next")}
+                        aria-label="Next colors"
+                      >
+                        ›
+                      </button>
+                    </div>
+                  </div>
 
                   <div className="wrap-price">
                     <span className="wrap-price-current">{pkg.price}</span>
@@ -817,7 +943,6 @@ export default function ExploreOptionsSection() {
             {specs.map((spec) => (
               <div className="mobile-label" key={spec.key}>
                 <span className="wrap-label-text">{spec.label}</span>
-                {['Film Type','Thickness'].includes(spec.label) && <span className="dot">◎</span>}
               </div>
             ))}
             <div className="mobile-label">
@@ -828,17 +953,41 @@ export default function ExploreOptionsSection() {
           {/* scrollable content shifted right to clear labels */}
           <div className="scroll-content flex ml-[140px] md:ml-[120px]">
             <div className="wrap-mobile" ref={mobileTableRef}>
-              {Object.values(packages).map((pkg, i) => (
-                <div className="wrap-mobile-card" key={i}>
+              {Object.entries(packages).map(([packageKey, pkg]) => (
+                <div className="wrap-mobile-card" key={packageKey}>
                   <div className="wrap-package-header">
                     <span className="wrap-header-text">{pkg.name}</span>
                   </div>
 
-                  <div className="mobile-value">{pkg.filmType}</div>
-                  <div className="mobile-value">{pkg.thickness}</div>
-                  <div className="mobile-value">{pkg.colorOptions}</div>
-                  <div className="mobile-value">{pkg.effectOptions}</div>
-                  <div className="mobile-value">{pkg.warranty}</div>
+                  <div className="wrap-mobile-color-slider">
+                    <div className="wrap-color-slider-track">
+                      <button
+                        type="button"
+                        className="wrap-color-nav"
+                        onClick={() => slideSwatches(packageKey, "prev", true)}
+                        aria-label="Previous colors"
+                      >
+                        ‹
+                      </button>
+                      <div className="wrap-color-swatches">
+                        {getVisibleSwatches(packageKey, true).map((colorHex) => (
+                          <span
+                            key={`mobile-${packageKey}-${colorHex}`}
+                            className="wrap-color-dot"
+                            style={{ backgroundColor: colorHex }}
+                          />
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        className="wrap-color-nav"
+                        onClick={() => slideSwatches(packageKey, "next", true)}
+                        aria-label="Next colors"
+                      >
+                        ›
+                      </button>
+                    </div>
+                  </div>
 
                   <div className="wrap-mobile-price">
                     <div className="wrap-price-current">{pkg.price}</div>
@@ -886,7 +1035,6 @@ export default function ExploreOptionsSection() {
           film: selectedPackage?.filmType,
           thickness: selectedPackage?.thickness,
           colorOptions: selectedPackage?.colorOptions,
-          effectOptions: selectedPackage?.effectOptions,
           warranty: selectedPackage?.warranty,
           price: selectedPackage?.price,
           original: selectedPackage?.originalPrice,

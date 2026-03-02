@@ -3,45 +3,64 @@
 import { useState } from "react";
 import Image from "next/image";
 
-const colors = [
-  { value: "red", label: "Red", hex: "#FF0000" },
-  { value: "ash", label: "Ash", hex: "#B8B8B8" },
-  { value: "blue", label: "Blue", hex: "#0047AB" },
-  { value: "green", label: "Green", hex: "#00FF00" },
+// Extended color list - shown as circular swatches with arrow navigation
+const allColors = [
+  { value: "red", hex: "#FF3B30", imageColor: "red" },
+  { value: "ash", hex: "#B8B8B8", imageColor: "ash" },
+  { value: "blue", hex: "#007AFF", imageColor: "blue" },
+  { value: "green", hex: "#34C759", imageColor: "green" },
+  { value: "orange", hex: "#FF9500", imageColor: "red" },
+  { value: "yellow", hex: "#FFCC00", imageColor: "ash" },
+  { value: "teal", hex: "#00C7BE", imageColor: "blue" },
+  { value: "purple", hex: "#5856D6", imageColor: "blue" },
+  { value: "pink", hex: "#FF2D55", imageColor: "red" },
+  { value: "lavender", hex: "#AF52DE", imageColor: "blue" },
+  { value: "charcoal", hex: "#3A3A3C", imageColor: "ash" },
+  { value: "graphite", hex: "#636366", imageColor: "ash" },
+  { value: "ivory", hex: "#F7F5EE", imageColor: "ash" },
+  { value: "bronze", hex: "#A2845E", imageColor: "red" },
+  { value: "cobalt", hex: "#0047AB", imageColor: "blue" },
+  { value: "lime", hex: "#A4DE02", imageColor: "green" },
+  { value: "mint", hex: "#98FF98", imageColor: "green" },
+  { value: "maroon", hex: "#800000", imageColor: "red" },
+  { value: "sky", hex: "#87CEEB", imageColor: "blue" },
+  { value: "snow", hex: "#FFFFFF", imageColor: "ash" },
 ];
 
-const effects = [
-  { value: "matte", label: "Matte" },
-  { value: "satin", label: "Satin" },
-  { value: "gloss", label: "Gloss" },
-];
+const COLORS_PER_PAGE = 4;
 
 const WrappingOption = () => {
   const [selectedColor, setSelectedColor] = useState("red");
-  const [selectedEffects, setSelectedEffects] = useState(["matte"]);
+  const [colorPage, setColorPage] = useState(0);
+
+  const totalPages = Math.ceil(allColors.length / COLORS_PER_PAGE);
+  const visibleColors = allColors.slice(
+    colorPage * COLORS_PER_PAGE,
+    colorPage * COLORS_PER_PAGE + COLORS_PER_PAGE
+  );
 
   const handleColorChange = (color) => {
     setSelectedColor(color);
   };
 
-  const handleEffectToggle = (effect) => {
-    if (selectedEffects.includes(effect)) {
-      setSelectedEffects(selectedEffects.filter((e) => e !== effect));
-    } else {
-      setSelectedEffects([...selectedEffects, effect]);
-    }
-  };
-
   const handleReset = () => {
     setSelectedColor("red");
-    setSelectedEffects(["matte"]);
+    setColorPage(0);
   };
 
-  // Get the first selected effect for display, default to matte
-  const displayEffect = selectedEffects[0] || "matte";
+  const nextColorPage = () => {
+    setColorPage((prev) => (prev + 1) % totalPages);
+  };
 
-  // Construct image path based on selections
-  const imagePath = `/wrapping/${selectedColor}/${selectedColor}_${displayEffect}.png`;
+  const prevColorPage = () => {
+    setColorPage((prev) => (prev - 1 + totalPages) % totalPages);
+  };
+
+  const currentColor = allColors.find((c) => c.value === selectedColor);
+  const selectedImageColor = currentColor?.imageColor || "red";
+
+  // Use matte as default effect since effects are removed from UI
+  const imagePath = `/wrapping/${selectedImageColor}/${selectedImageColor}_matte.png`;
 
   return (
     <section className="relative py-12 md:py-16 bg-[#0A0A0C] overflow-hidden mt-10 d:mt-0">
@@ -170,10 +189,11 @@ const WrappingOption = () => {
                   <div className="relative w-full h-full">
                     <Image
                       src={imagePath}
-                      alt={`${selectedColor} ${displayEffect} car wrap`}
+                      alt={`${selectedColor} car wrap`}
                       fill
                       sizes="(max-width: 768px) 100vw, 50vw"
                       className="object-contain"
+                      style={{ transition: "opacity 0.4s ease-in-out" }}
                       priority
                     />
                   </div>
@@ -181,157 +201,89 @@ const WrappingOption = () => {
               </div>
             </div>
 
-            {/* Color Buttons & Effect Checkboxes */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-3">
-              {/* Left - Color Buttons */}
-              <div className="flex flex-wrap gap-2 md:gap-3">
-                {colors.map((color) => (
+            {/* Selected Color Display */}
+            <div className="flex items-center justify-center gap-6 mb-4">
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-6 h-6 rounded-full border-2 border-white/30"
+                  style={{ backgroundColor: currentColor?.hex || "#FF0000" }}
+                />
+                <span
+                  className="text-gray-400 text-sm"
+                  style={{ fontFamily: "Montserrat, sans-serif" }}
+                >
+                  {currentColor?.hex || "#FF0000"}
+                </span>
+              </div>
+            </div>
+
+            {/* Color Buttons with Navigation Arrows */}
+            <div className="flex items-center justify-center gap-3 mb-5">
+              {/* Left Arrow */}
+              <button
+                onClick={prevColorPage}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm border border-white/10 hover:bg-black/60 transition-colors shrink-0"
+                aria-label="Previous colors"
+              >
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M11 4L6 9L11 14" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+
+              {/* Circular Color Buttons */}
+              <div className="flex gap-2 md:gap-3 transition-all duration-300 ease-in-out">
+                {visibleColors.map((color, idx) => (
                   <button
-                    key={color.value}
+                    key={`${color.value}-${colorPage}-${idx}`}
                     onClick={() => handleColorChange(color.value)}
-                    className={`px-4 md:px-6 py-2 rounded-lg font-semibold text-xs md:text-sm transition-all tracking-wide ${
-                      selectedColor === color.value
-                        ? "text-white"
-                        : "text-gray-400 bg-transparent"
-                    }`}
+                    className="w-10 h-10 md:w-11 md:h-11 rounded-full transition-all duration-300"
                     style={{
-                      fontFamily: "Oswald, sans-serif",
                       borderWidth: "2px",
-                      borderColor: color.hex,
-                      backgroundColor:
+                      borderColor:
                         selectedColor === color.value
-                          ? color.hex
-                          : "transparent",
+                          ? "#F6D0AB"
+                          : "rgba(255,255,255,0.35)",
+                      backgroundColor: color.hex,
+                      boxShadow:
+                        selectedColor === color.value
+                          ? "0 0 0 2px rgba(246, 208, 171, 0.28), 0 0 16px rgba(246, 208, 171, 0.35)"
+                          : "none",
                     }}
+                    aria-label={`Select color ${idx + 1}`}
                   >
-                    {color.label}
+                    <span className="sr-only">{color.hex}</span>
                   </button>
                 ))}
               </div>
 
-              {/* Right - Effect Checkboxes */}
-              <div className="flex flex-wrap gap-2 md:gap-6">
-                {effects.map((effect) => (
-                  <label
-                    key={effect.value}
-                    className="flex items-center gap-2 md:gap-3 cursor-pointer group"
-                  >
-                    <div className="relative">
-                      <input
-                        type="checkbox"
-                        checked={selectedEffects.includes(effect.value)}
-                        onChange={() => handleEffectToggle(effect.value)}
-                        className="w-4 h-4 md:w-5 md:h-5 rounded border-2 border-gray-600 bg-transparent
-                                 checked:bg-[#C9A962] checked:border-[#C9A962]
-                                 focus:ring-2 focus:ring-[#C9A962]/50 cursor-pointer
-                                 appearance-none transition-all"
-                        style={{
-                          backgroundImage: selectedEffects.includes(
-                            effect.value,
-                          )
-                            ? "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E\")"
-                            : "none",
-                          backgroundSize: "100% 100%",
-                          backgroundPosition: "center",
-                          backgroundRepeat: "no-repeat",
-                        }}
-                      />
-                    </div>
-                    <span
-                      className="text-white group-hover:text-[#C9A962] transition-colors tracking-wide text-sm md:text-base"
-                      style={{ fontFamily: "Oswald, sans-serif" }}
-                    >
-                      {effect.label}
-                    </span>
-                  </label>
+              {/* Right Arrow */}
+              <button
+                onClick={nextColorPage}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm border border-white/10 hover:bg-black/60 transition-colors shrink-0"
+                aria-label="Next colors"
+              >
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M7 4L12 9L7 14" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Page indicator dots */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setColorPage(i)}
+                    className={`rounded-full transition-all duration-300 ${
+                      i === colorPage
+                        ? "w-6 h-2 bg-gradient-to-r from-[#d4af37] to-[#ffebb1]"
+                        : "w-2 h-2 bg-white/25 hover:bg-white/50"
+                    }`}
+                  />
                 ))}
               </div>
-            </div>
-
-            {/* Chosen Color & Effect Input Boxes */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-5">
-              {/* Chosen Color */}
-              <div>
-                <label
-                  className="block text-white text-xs md:text-sm mb-2 tracking-wide"
-                  style={{ fontFamily: "Oswald, sans-serif" }}
-                >
-                  Chosen Color :
-                </label>
-                <div
-                  className="w-full px-3 md:px-4 py-2 md:py-3 bg-[#1C1C1E] text-white rounded-lg border border-[#2C2C2E] text-sm md:text-base"
-                  style={{ fontFamily: "Oswald, sans-serif" }}
-                >
-                  {colors.find((c) => c.value === selectedColor)?.label}
-                </div>
-              </div>
-
-              {/* Chosen Effect */}
-              <div>
-                <label
-                  className="block text-white text-xs md:text-sm mb-2 tracking-wide"
-                  style={{ fontFamily: "Oswald, sans-serif" }}
-                >
-                  Chosen Effect :
-                </label>
-                <div
-                  className="w-full px-3 md:px-4 py-2 md:py-3 bg-[#1C1C1E] text-white rounded-lg border border-[#2C2C2E] text-sm md:text-base"
-                  style={{ fontFamily: "Oswald, sans-serif" }}
-                >
-                  {selectedEffects.length > 0
-                    ? selectedEffects
-                        .map((e) => effects.find((ef) => ef.value === e)?.label)
-                        .join(", ")
-                    : "None"}
-                </div>
-              </div>
-            </div>
-
-            {/* Film Type, Thickness & Warranty - Single Row */}
-            <div className="grid grid-cols-3 gap-3 md:gap-6 text-center pt-2 border-t border-[#2C2C2E]">
-              <div className="py-2 md:py-3">
-                <div
-                  className="text-gray-400 text-[10px] md:text-xs uppercase tracking-widest mb-1 md:mb-2"
-                  style={{ fontFamily: "Oswald, sans-serif" }}
-                >
-                  FILM TYPE
-                </div>
-                <div
-                  className="text-white text-xs md:text-base font-semibold"
-                  style={{ fontFamily: "Oswald, sans-serif" }}
-                >
-                  Super Film
-                </div>
-              </div>
-              <div className="py-2 md:py-3">
-                <div
-                  className="text-gray-400 text-[10px] md:text-xs uppercase tracking-widest mb-1 md:mb-2"
-                  style={{ fontFamily: "Oswald, sans-serif" }}
-                >
-                  THICKNESS
-                </div>
-                <div
-                  className="text-white text-xs md:text-base font-semibold"
-                  style={{ fontFamily: "Oswald, sans-serif" }}
-                >
-                  10nm
-                </div>
-              </div>
-              <div className="py-2 md:py-3">
-                <div
-                  className="text-gray-400 text-[10px] md:text-xs uppercase tracking-widest mb-1 md:mb-2"
-                  style={{ fontFamily: "Oswald, sans-serif" }}
-                >
-                  WARRANTY
-                </div>
-                <div
-                  className="text-white text-xs md:text-base font-semibold"
-                  style={{ fontFamily: "Oswald, sans-serif" }}
-                >
-                  5 Years
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

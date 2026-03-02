@@ -200,8 +200,7 @@ export default function FAQSection() {
                     {open && (
                       <div className="px-6 pb-2 md:pb-4">
                         <p
-                          className="text-[12px] md:text-[18px] leading-[28px] font-medium font-montserrat pr-0.5 -mt-3"
-                          style={{ color: "#A9A9A9" }}
+                          className="text-[16px] md:text-[18px] leading-[26px] md:leading-[28px] text-[#D4DEE5] md:text-[#A9A9A9] font-medium font-montserrat pt-2 pl-2 pr-0.5 -mt-3"
                         >
                           {faq.answer}
                         </p>
@@ -223,7 +222,10 @@ export default function FAQSection() {
             padding-right: 24px !important;
           }
             .faq-mobile{
-            height:800px !important;
+            height:auto !important;
+            min-height:800px;
+            padding-top:40px;
+            padding-bottom:40px;
             }
 
           .faq-left {
@@ -251,8 +253,8 @@ export default function FAQSection() {
 
           /* Question */
           .faq-accordion button span:first-child {
-            font-size: 12px !important;
-            line-height: 28px !important;
+            font-size: 16px !important;
+            line-height: 24px !important;
           }
 
           /* Toggle icon */
@@ -268,8 +270,9 @@ export default function FAQSection() {
 
           /* Answer */
           .faq-accordion > div > div {
-            font-size: 12px !important;
-            line-height: 28px !important;
+            font-size: 16px !important;
+            line-height: 26px !important;
+            color: #d4dee5 !important;
             padding-left: 17px !important;
             padding-right: 0 !important;
           }

@@ -149,13 +149,13 @@ export default function CoatingHero() {
             background-repeat: no-repeat !important;
             height: auto !important;
             min-height: 480px !important;
-            top: 0px !important;
+            top: 0 !important;
             bottom: auto !important;
           }
 
           .coating-hero-content {
             padding-top: 80px !important;
-            padding-left: 4px !important;
+            padding-left: 10px !important;
             padding-right: 16px !important;
             /* center everything horizontally on mobile */
             justify-content: center !important;
@@ -172,7 +172,7 @@ export default function CoatingHero() {
             font-family: "Oswald", sans-serif !important;
             font-weight: 700 !important;
             font-style: bold !important;
-            font-size: 37px !important;
+            font-size: 36px !important;
             line-height: 48px !important;
             letter-spacing: 0.5% !important;
             text-align: center !important;
@@ -186,7 +186,7 @@ export default function CoatingHero() {
 
           .social-strip {
             display: flex !important;
-            right: 2px !important;
+            right: 6px !important;
             top: 85% !important;
             transform: translateY(-50%) !important;
             flex-direction: column !important;

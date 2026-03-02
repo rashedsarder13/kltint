@@ -363,48 +363,12 @@ export default function CoatingCarouselLine() {
                   />
                 </div>
 
-                <div className="mobile-page-counter md:hidden">
-                  <span className="mobile-counter-current">{idx + 1}</span>
-                  <span className="mobile-counter-total">/{slides.length}</span>
-                </div>
+
               </div>
             </div>
           </div>
 
-          {/* Page Counter - Bottom Right */}
-          <div
-            className="absolute z-30 coating-page-counter"
-            style={{
-              bottom: "80px",
-              right: "112px",
-              display: "flex",
-              alignItems: "baseline",
-              gap: "4px",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "Oswald",
-                fontSize: "60px",
-                fontWeight: 700,
-                lineHeight: "68px",
-                color: "#FFFFFF",
-              }}
-            >
-              {idx + 1}
-            </span>
-            <span
-              style={{
-                fontFamily: "Oswald",
-                fontSize: "32px",
-                fontWeight: 500,
-                lineHeight: "40px",
-                color: "#A9A9A9",
-              }}
-            >
-              /{slides.length}
-            </span>
-          </div>
+
         </section>
       ))}
 
@@ -482,9 +446,8 @@ export default function CoatingCarouselLine() {
             height: auto !important;
             min-height: 800px !important;
             overflow: visible !important;
-            margin-top: 10px !important;
-            margin-bottom: 140px !important;
-            margin-top: 10px !important;
+            margin-top: 20px !important;
+            margin-bottom: 180px !important;
           }
 
           .coating-bg-car {

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 const faqData = {
@@ -206,6 +206,7 @@ const Accordion = () => {
   const [openAccordion, setOpenAccordion] = useState(
     getDefaultAccordionId("General"),
   );
+  const mobileCategoriesRef = useRef(null);
 
   useEffect(() => {
     // when the active category changes, update the open accordion
@@ -226,6 +227,15 @@ const Accordion = () => {
 
   const toggleAccordion = (id) => {
     setOpenAccordion(openAccordion === id ? null : id);
+  };
+
+  const scrollMobileCategories = (direction) => {
+    if (!mobileCategoriesRef.current) return;
+    const amount = 140;
+    mobileCategoriesRef.current.scrollBy({
+      left: direction === "left" ? -amount : amount,
+      behavior: "smooth",
+    });
   };
 
   // Mobile-only rendering: keep background image and blue ellipse, leave desktop untouched
@@ -309,14 +319,48 @@ const Accordion = () => {
               <div
                 style={{
                   display: "flex",
-                  gap: "12px",
-                  overflowX: "auto",
-                  paddingTop: "16px",
-                  paddingBottom: "8px",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
                   marginTop: "12px",
-                  // marginBottom: "20px",
                 }}
               >
+                <button
+                  type="button"
+                  onClick={() => scrollMobileCategories("left")}
+                  aria-label="Scroll categories left"
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <svg
+                    width="12"
+                    height="20"
+                    viewBox="0 0 12 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path d="M10 2L2 10L10 18" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <div
+                  ref={mobileCategoriesRef}
+                  style={{
+                    display: "flex",
+                    gap: "12px",
+                    overflowX: "auto",
+                    paddingTop: "16px",
+                    paddingBottom: "8px",
+                    // marginBottom: "20px",
+                  }}
+                >
                 {categories.map((cat) => (
                   <button
                     key={cat}
@@ -340,6 +384,32 @@ const Accordion = () => {
                     {cat}
                   </button>
                 ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => scrollMobileCategories("right")}
+                  aria-label="Scroll categories right"
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <svg
+                    width="12"
+                    height="20"
+                    viewBox="0 0 12 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path d="M2 2L10 10L2 18" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
               </div>
 
               <div
@@ -403,9 +473,9 @@ const Accordion = () => {
                           padding: "8px 0 0 0",
                           fontFamily: "Montserrat, sans-serif",
                           fontWeight: 400,
-                          fontSize: "15px",
-                          lineHeight: "22px",
-                          color: "#A9A9A9",
+                          fontSize: "17px",
+                          lineHeight: "26px",
+                          color: "#D4DEE5",
                         }}
                       >
                         {item.answer}

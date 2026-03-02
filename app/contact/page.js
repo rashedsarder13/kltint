@@ -1,6 +1,7 @@
 import ContactDetails from "@/components/Contact/ContactDetails";
 import ContactHero from "@/components/Contact/ContactHero";
 import GalleryContact from "@/components/Gallery/GalleryContact";
+import NearestArea from "@/components/Home/NearestArea";
 
 export const metadata = {
   title: "Contact Us",
@@ -12,6 +13,7 @@ export default function ContactPage() {
   return (
     <>
       <ContactHero />
+      <NearestArea />
       <ContactDetails />
       <GalleryContact />
       {/* Add more contact components here (contact form, map, etc.) */}
