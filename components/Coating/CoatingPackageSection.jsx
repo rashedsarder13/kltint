@@ -763,7 +763,7 @@ export default function CoatingPackageSection() {
           </div>
         </div>
         <div
-          className="small-banner"
+          className="small-banner pt-24"
           style={{
             marginTop: "140px",
             display: "flex",

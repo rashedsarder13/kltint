@@ -912,7 +912,7 @@ export default function PackageSection() {
               onClick={(e) => handleSeeCombo(e)}
             >
               <Button
-                className="lets_see_the_combo_btn"
+                className="lets_see_the_combo_btn pb-"
                 text={"LET'S SEE THE COMBO"}
                 width={331}
                 height={68}
@@ -922,7 +922,7 @@ export default function PackageSection() {
 
           <div
             style={{
-              marginTop: "40px",
+              marginTop: "76px",
               display: "flex",
               justifyContent: "center",
             }}

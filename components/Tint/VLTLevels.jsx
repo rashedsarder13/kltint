@@ -167,11 +167,10 @@ export default function VLTLevels() {
           {windowTypes.map((wt) => (
             <div key={wt.name} className="w-full flex justify-center">
               <img
-                key={`mobile-${wt.name}-${mobileVLTs[wt.name]}`}
                 src={getCarSrcFor(wt.name, mobileVLTs[wt.name])}
                 alt={`${wt.name} car view`}
                 className={`mobile-car-img ${wt.name !== "FRONT" ? "mobile-car-img-large" : ""}`}
-                style={{ display: "block" }}
+                style={{ display: "block", transition: "opacity 0.25s ease" }}
               />
             </div>
           ))}
@@ -250,48 +249,78 @@ export default function VLTLevels() {
 
       {/* ========== DESKTOP LAYOUT ========== */}
       <div className="relative z-10 max-w-[1440px] mx-auto px-[112px] mt-10 h-full flex flex-col justify-center vlt-desktop-layout">
-        {/* Car Image */}
+        {/* All 3 Car Images shown side by side */}
         <div
-          className="relative w-full max-w-[900px] mx-auto vlt-stage flex items-center justify-center"
+          className="relative w-full max-w-[1200px] mx-auto vlt-stage flex items-end justify-center gap-4"
           style={{ minHeight: "450px" }}
         >
-          {/* Eclipse Background - Behind */}
-          <div
-            className="absolute left-1/2 transform -translate-x-1/2 z-0 vlt-eclipse"
-            style={{
-              width: currentWindow.eclipseWidth,
-              height: currentWindow.eclipseHeight,
-              bottom: currentWindow.eclipseBottom,
-              opacity: 1,
-            }}
-          >
-            <Image
-              src={currentWindow.eclipse}
-              alt="Eclipse effect"
-              width={parseInt(currentWindow.eclipseWidth)}
-              height={parseInt(currentWindow.eclipseHeight)}
-              className="w-full h-full object-contain"
-            />
-          </div>
-          {/* Car Image - In front */}
-          <div
-            className="relative z-10 mx-auto vlt-car-container"
-            style={{
-              width: currentWindow.carWidth,
-              height: currentWindow.carHeight,
-              opacity: 1,
-            }}
-          >
-            <img
-              key={`${activeWindow}-${selectedVLTs[activeWindow] ?? currentWindow.activeVLT}`}
-              src={getCarSrc()}
-              alt={`${activeWindow} car view`}
-              width={parseInt(currentWindow.carWidth)}
-              height={parseInt(currentWindow.carHeight)}
-              className="w-full h-full object-contain"
-              style={{ display: "block" }}
-            />
-          </div>
+          {windowTypes.map((wt) => {
+            const isActive = activeWindow === wt.name;
+            const carSrc = getCarSrcFor(wt.name, selectedVLTs[wt.name] ?? wt.activeVLT);
+            return (
+              <div
+                key={wt.name}
+                className="relative flex flex-col items-center transition-all duration-500 ease-in-out cursor-pointer"
+                style={{
+                  flex: isActive ? "1.4" : "0.8",
+                  opacity: isActive ? 1 : 0.6,
+                  filter: isActive ? "none" : "brightness(0.7)",
+                  transition: "flex 0.5s ease, opacity 0.5s ease, filter 0.5s ease",
+                }}
+                onClick={() => setActiveWindow(wt.name)}
+              >
+                {/* Eclipse Background */}
+                <div
+                  className="absolute left-1/2 transform -translate-x-1/2 z-0"
+                  style={{
+                    width: "80%",
+                    height: "60px",
+                    bottom: "0px",
+                    opacity: isActive ? 1 : 0.4,
+                    transition: "opacity 0.5s ease",
+                  }}
+                >
+                  <Image
+                    src={wt.eclipse}
+                    alt="Eclipse effect"
+                    width={parseInt(wt.eclipseWidth)}
+                    height={parseInt(wt.eclipseHeight)}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                {/* Car Image with smooth crossfade */}
+                <div
+                  className="relative z-10 w-full"
+                  style={{
+                    height: isActive ? "380px" : "280px",
+                    transition: "height 0.5s ease",
+                  }}
+                >
+                  <img
+                    src={carSrc}
+                    alt={`${wt.name} car view`}
+                    className="w-full h-full object-contain"
+                    style={{
+                      display: "block",
+                      transition: "opacity 0.4s ease-in-out",
+                    }}
+                  />
+                </div>
+                {/* Window type label */}
+                <span
+                  className="mt-2 font-oswald text-center"
+                  style={{
+                    fontSize: isActive ? "18px" : "14px",
+                    color: isActive ? "#D4AF37" : "#666",
+                    fontWeight: 500,
+                    transition: "all 0.3s ease",
+                  }}
+                >
+                  {wt.name}
+                </span>
+              </div>
+            );
+          })}
         </div>
 
         {/* VLT Grid Table */}
@@ -459,12 +488,14 @@ export default function VLTLevels() {
         .mobile-car-img {
           width: 80%;
           max-width: 300px;
-          height: auto;
+          height: 130px;
           object-fit: contain;
+          will-change: opacity;
         }
         .mobile-car-img-large {
           width: 95%;
           max-width: 360px;
+          height: 150px;
         }
 
         /* Mobile window type button */

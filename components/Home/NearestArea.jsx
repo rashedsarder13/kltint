@@ -37,10 +37,10 @@ const NearestArea = () => {
 
         @media (max-width: 767px) {
           section {
-            min-height: 300px !important;
+            min-height: 820px !important;
           }
           .container-main {
-            min-height: 550px !important;
+            min-height: 820px !important;
           }
           .gradient-bg {
             height: 100% !important;
@@ -71,48 +71,55 @@ const NearestArea = () => {
             pointer-events: none !important;
           }
           .map-container {
-            top: 250px !important;
+            top: 280px !important;
             left: 5% !important;
             width: 90% !important;
-            height: auto !important;
+            height: calc(90vw * 570 / 1213) !important;
+            max-height: 190px !important;
           }
           .map-icon-1 {
-            top: 250px !important;
-            left: calc(50% - 15px) !important;
-            width: 30px !important;
-            height: 30px !important;
+            top: 315px !important;
+            left: calc(50% - 30px) !important;
+            width: 60px !important;
+            height: 60px !important;
           }
           .map-icon-2 {
-            top: 300px !important;
-            left: calc(20% - 15px) !important;
-            width: 30px !important;
-            height: 30px !important;
+            top: 355px !important;
+            left: calc(20% - 30px) !important;
+            width: 60px !important;
+            height: 60px !important;
           }
           .map-icon-3 {
-            top: 275px !important;
-            left: calc(75% - 15px) !important;
-            width: 30px !important;
-            height: 30px !important;
+            top: 352px !important;
+            left: calc(63% - 30px) !important;
+            width: 60px !important;
+            height: 60px !important;
           }
           .map-icon-4 {
             top: 380px !important;
-            left: calc(55% - 15px) !important;
-            width: 30px !important;
-            height: 30px !important;
+            left: calc(55% - 30px) !important;
+            width: 60px !important;
+            height: 60px !important;
           }
           .info-card {
-            top: 300px !important;
+            top: 370px !important;
             left: calc(50% + 80px) !important;
             width: 60px !important;
             height: auto !important;
           }
           .visit-button {
-            top: 420px !important;
+            top: 510px !important;
             left: 48% !important;
             transform: translateX(-50%) !important;
             width: 260px !important;
             height: auto !important;
             margin-bottom: 40px !important;
+          }
+          .mobile-subtitle {
+            display: block !important;
+          }
+          .mobile-arrow-hint {
+            display: flex !important;
           }
         }
         @media (min-width: 768px) {
@@ -120,6 +127,12 @@ const NearestArea = () => {
             font-size: 48px !important;
             line-height: 72px !important;
             padding: 0 !important;
+          }
+          .mobile-subtitle {
+            top: 250px !important;
+            font-size: 20px !important;
+            line-height: 30px !important;
+            padding: 0 160px !important;
           }
         }
 
@@ -263,6 +276,27 @@ const NearestArea = () => {
             {/* Mobile-only blue ellipse under the title */}
             <div className="nearest-mobile-ellipse" />
           </div>
+
+          {/* Mobile subtitle - visible only on mobile */}
+          <p
+            className="mobile-subtitle"
+            style={{
+              display: "block",
+              position: "absolute",
+              top: "225px",
+              width: "100%",
+              padding: "0 24px",
+              textAlign: "center",
+              fontFamily: "Montserrat, sans-serif",
+              fontWeight: 400,
+              fontSize: "13px",
+              lineHeight: "20px",
+              color: "#A9A9A9",
+              zIndex: 5,
+            }}
+          >
+            Select a glowing branch icon to find the exact address and plan your visit today.
+          </p>
 
           {/* Green Backdrop Filter Blur - Behind Map for Glow Effect */}
           <div

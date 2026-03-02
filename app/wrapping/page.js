@@ -6,6 +6,7 @@ import WrappingFAQ from "@/components/Wrapping/WrappingFAQ";
 import ContactSection from "@/components/shared/ContactSection";
 import WrappingOption from "@/components/Wrapping/WrappingOption";
 import WrappingCarouselLine from "@/components/Wrapping/WrappingCarouselLine";
+import PayInstallmentsSection from "@/components/Wrapping/PayInstallmentsSection";
 
 export const metadata = {
   title: "Matte,Gloss,Satin Wrapping",
@@ -21,6 +22,7 @@ export default function WrappingPage() {
       {/* <WrappingCarousel /> */}
       <WrappingOption />
       <WrappingPackage />
+      <PayInstallmentsSection />
       <ExploreOptionsSection />
       <WrappingFAQ />
       <ContactSection />

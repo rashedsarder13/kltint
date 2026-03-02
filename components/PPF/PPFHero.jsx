@@ -172,7 +172,7 @@ export default function PPFHero() {
             font-family: "Oswald", sans-serif !important;
             font-weight: 700 !important;
             font-style: bold !important;
-            font-size: 38px !important;
+            font-size: 36px !important;
             line-height: 48px !important;
             letter-spacing: 0.5% !important;
             text-align: center !important;

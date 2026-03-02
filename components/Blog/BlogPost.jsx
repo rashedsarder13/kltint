@@ -102,16 +102,16 @@ export default function BlogPost() {
                 </div>
 
                 {/* Content Side */}
-                <div className="w-1/2 h-full flex flex-col justify-center px-12 pb-8 -mt-12">
-                  <h3
-                    className="text-3xl md:text-4xl font-bold font-oswald mb-8 transition-all group-hover:text-white"
+                <div className="w-1/2 h-full flex flex-col justify-center px-6 pb-8 -mt-12">
+                  <p
+                    className="text-xl md:text-4xl font-bold font-oswald mb-8 transition-all group-hover:text-white"
                     style={{
                       color: "#FFFFFF",
                       lineHeight: "1.2",
                     }}
                   >
                     {post.title}
-                  </h3>
+                  </p>
 
                   <button
                     className="relative w-fit"
