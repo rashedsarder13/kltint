@@ -165,7 +165,7 @@ export default function PPFCarouselLine() {
       {slides.map((slide, idx) => (
         <section
           key={slide.id}
-          className="relative w-full bg-[#010101] overflow-hidden ppf-carousel-section"
+          className="relative w-full bg-[#010101] overflow-hidden ppf-carousel-section  pt-16 sm:pt-0"
           style={{
             minHeight: "1033px",
           }}
@@ -447,8 +447,8 @@ export default function PPFCarouselLine() {
             height: auto !important;
             min-height: 800px !important;
             overflow: visible !important;
-            margin-top: 10px !important;
-            margin-bottom: 140px !important;
+            margin-top: 0px !important;
+            margin-bottom: 40px !important;
           }
 
           .ppf-bg-car {
@@ -472,7 +472,7 @@ export default function PPFCarouselLine() {
             right: 50% !important;
             margin-left: -50vw !important;
             margin-right: -50vw !important;
-            margin-top: 26px !important;
+            margin-top: 36px !important;
             margin-bottom: 25px !important;
             height: auto !important;
             padding: 0 !important;
@@ -535,12 +535,12 @@ export default function PPFCarouselLine() {
           }
 
           .ppf-content .space-y-5 h4 {
-            font-size: 18px !important;
+            font-size: 20px !important;
             line-height: 26px !important;
           }
 
           .ppf-content .space-y-5 p {
-            font-size: 14px !important;
+            font-size: 18px !important;
             line-height: 22px !important;
           }
 

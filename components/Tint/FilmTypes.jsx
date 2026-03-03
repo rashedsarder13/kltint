@@ -622,8 +622,8 @@ export default function FilmTypes() {
           }
 
           .filmtypes-feature-text {
-            font-size: 20px !important;
-            line-height: 32px !important;
+            font-size: 18px !important;
+            line-height: 22px !important;
           }
 
           /* Hide desktop CTA */

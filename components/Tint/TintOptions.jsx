@@ -642,11 +642,15 @@ export default function TintOptions() {
             font-size: 32px !important;
             line-height: 40px !important;
             font-family: "Oswald", sans-serif !important;
-            font-weight: 500 !important;
-            letter-spacing: 0px !important;
-            color:  linear-gradient(137.95deg, #7A96AC 2.28%, #EAEFF3 19.8%, #C2D4E1 32.94%, #FFFFFF 50.16%, #D4DEE5 62.15%, #ABBDC8 78.69%, #BCCAD7 95.24%)
- !important;
-            /* keep same weight/color/gradient as desktop */
+            font-weight: 700 !important;
+            letter-spacing: 0.24px !important;
+            /* keep same gradient from desktop */
+          }
+
+          /* Content Header (package names): differentiate from section title and content values */
+          .mobile-card .package-header .header-text {
+            font-size: 20px !important;
+            line-height: 28px !important;
           }
 
           .scroll-btn {

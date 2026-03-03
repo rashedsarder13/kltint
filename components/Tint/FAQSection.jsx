@@ -238,8 +238,8 @@ export default function FAQSection() {
           }
 
           .faq-left h2 {
-            font-size: 40px !important;
-            line-height: 48px !important;
+            font-size: 32px !important;
+            line-height: 40px !important;
           }
 
           .faq-left p {
@@ -253,8 +253,8 @@ export default function FAQSection() {
 
           /* Question */
           .faq-accordion button span:first-child {
-            font-size: 16px !important;
-            line-height: 24px !important;
+            font-size: 20px !important;
+            line-height: 26px !important;
           }
 
           /* Toggle icon */
@@ -269,9 +269,9 @@ export default function FAQSection() {
           }
 
           /* Answer */
-          .faq-accordion > div > div {
-            font-size: 16px !important;
-            line-height: 26px !important;
+          .faq-accordion > div > div p {
+            font-size: 18px !important;
+            line-height: 22px !important;
             color: #d4dee5 !important;
             padding-left: 17px !important;
             padding-right: 0 !important;

@@ -407,10 +407,10 @@ export default function ComboExploreOptionsSection() {
         @media (max-width: 640px) {
           h2 {
             font-family: Oswald, sans-serif !important;
-            font-weight: 500 !important;
+            font-weight: 700 !important;
             font-size: 32px !important;
-            line-height: 48px !important;
-            letter-spacing: 0.16px !important;
+            line-height: 40px !important;
+            letter-spacing: 0.24px !important;
             padding: 0 20px !important;
             background: linear-gradient(
               137.95deg,
@@ -556,10 +556,11 @@ export default function ComboExploreOptionsSection() {
             -webkit-text-fill-color: transparent;
           }
 
-          /* golden header text on mobile */
+          /* golden header text on mobile — Content Header (Type 2) */
           .mobile-card .combo-header-text {
+            font-size: 20px !important;
+            line-height: 28px !important;
             background: linear-gradient(137.95deg, #7A96AC 2.28%, #EAEFF3 19.8%, #C2D4E1 32.94%, #FFFFFF 50.16%, #D4DEE5 62.15%, #ABBDC8 78.69%, #BCCAD7 95.24%);
-
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
           }

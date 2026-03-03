@@ -475,10 +475,11 @@ export default function PPFOptions() {
             padding: 0 12px 12px;
           }
 
-          /* make header-text golden on mobile */
+          /* make header-text golden on mobile — Content Header (Type 2): 20px to differentiate from section title (32px) and content values (16px) */
           .mobile-card .ppf-header-text {
+            font-size: 20px !important;
+            line-height: 28px !important;
             background: linear-gradient(137.95deg, #7A96AC 2.28%, #EAEFF3 19.8%, #C2D4E1 32.94%, #FFFFFF 50.16%, #D4DEE5 62.15%, #ABBDC8 78.69%, #BCCAD7 95.24%);
-
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
           }

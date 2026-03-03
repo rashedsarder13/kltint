@@ -224,6 +224,7 @@ export default function PackageSection() {
             }}
           />
           <h2
+            className="tint-packages-title"
             style={{
               position: "relative",
               zIndex: 1,
@@ -966,6 +967,19 @@ export default function PackageSection() {
         }
 
         @media (max-width: 640px) {
+          section {
+            height: auto !important;
+            min-height: auto !important;
+            padding-top: 60px !important;
+            padding-bottom: 60px !important;
+          }
+
+          .tint-packages-title {
+            font-size: 32px !important;
+            line-height: 40px !important;
+            margin-bottom: 0 !important;
+          }
+
           .filmtypes-layout {
             flex-direction: column;
             gap: 20px;
@@ -1173,25 +1187,12 @@ export default function PackageSection() {
           }
 
           .all_in_one_heading {
-            line-height: 48px !important;
+            font-size: 32px !important;
+            line-height: 40px !important;
             padding-bottom: 10px !important;
             margin-bottom: 20px !important;
           }
 
-          .lets_see_the_combo_btn > div:first-child {
-            width: 220px !important;
-            height: 50px !important;
-          }
-
-          .lets_see_the_combo_btn > div:first-child span {
-            font-size: 18px !important;
-          }
-
-          .lets_see_the_combo_btn > div:nth-child(2),
-          .lets_see_the_combo_btn > div:nth-child(3) {
-            width: 30px !important;
-            height: 52px !important;
-          }
         }
       `}</style>
 

@@ -108,7 +108,7 @@ export default function ComboCarouselLine() {
       {slides.map((slide, idx) => (
         <section
           key={slide.id}
-          className="relative w-full bg-[#010101] overflow-hidden combo-carousel-section"
+          className="relative w-full bg-[#010101] overflow-hidden combo-carousel-section  pt-16 sm:pt-0"
           style={{
             minHeight: "1033px",
           }}
@@ -215,7 +215,7 @@ export default function ComboCarouselLine() {
               </div>
 
               {/* Benefits list */}
-              <div className="space-y-5 ">
+              <div className="space-y-5 mb-10">
                 {slide.benefits.map((b, i) => (
                   <div key={i} className="flex items-start gap-5">
                     <div className="relative flex-shrink-0 w-[66px] h-[66px]">
@@ -260,7 +260,7 @@ export default function ComboCarouselLine() {
               </div>
 
               {/* CTA Button */}
-              <div className="relative inline-block explore-btn mt-10 cursor-pointer">
+              <div className="relative inline-block explore-btn cursor-pointer">
                 <Button
                   text={slide.cta}
                   width={420}
@@ -422,8 +422,8 @@ export default function ComboCarouselLine() {
             height: auto !important;
             min-height: 800px !important;
             overflow: visible !important;
-            margin-top: 10px !important;
-            margin-bottom: 140px !important;
+            margin-top: 0px !important;
+            margin-bottom: 40px !important;
           }
 
           .combo-bg-car {
@@ -510,12 +510,12 @@ export default function ComboCarouselLine() {
           }
 
           .combo-content .space-y-5 h4 {
-            font-size: 18px !important;
+            font-size: 20px !important;
             line-height: 26px !important;
           }
 
           .combo-content .space-y-5 p {
-            font-size: 14px !important;
+            font-size: 18px !important;
             line-height: 22px !important;
           }
 

@@ -165,7 +165,7 @@ export default function CoatingCarouselLine() {
       {slides.map((slide, idx) => (
         <section
           key={slide.id}
-          className="relative w-full bg-[#010101] overflow-hidden coating-carousel-section"
+          className="relative w-full bg-[#010101] overflow-hidden coating-carousel-section  pt-16 sm:pt-0"
           style={{ minHeight: "1081px" }}
         >
           {/* Main background car image */}
@@ -270,7 +270,7 @@ export default function CoatingCarouselLine() {
 
             <div className="max-w-[600px]">
               {/* Benefits list */}
-              <div className="space-y-4 md:space-y-5 mb-8 md:mb-10">
+              <div className="space-y-5 mb-10">
                 {slide.benefits.map((b, i) => (
                   <div key={i} className="flex items-start gap-5">
                     {/* Icon circle */}
@@ -425,12 +425,12 @@ export default function CoatingCarouselLine() {
             line-height: 1.2 !important;
           }
 
-          .coating-content .space-y-4 h4 {
+          .coating-content .space-y-5 h4 {
             font-size: 20px !important;
             line-height: 28px !important;
           }
 
-          .coating-content .space-y-4 p {
+          .coating-content .space-y-5 p {
             font-size: 15px !important;
             line-height: 24px !important;
           }
@@ -446,8 +446,8 @@ export default function CoatingCarouselLine() {
             height: auto !important;
             min-height: 800px !important;
             overflow: visible !important;
-            margin-top: 20px !important;
-            margin-bottom: 180px !important;
+            margin-top: 0px !important;
+            margin-bottom: 40px !important;
           }
 
           .coating-bg-car {
@@ -521,25 +521,25 @@ export default function CoatingCarouselLine() {
             z-index: 30 !important;
           }
 
-          .coating-content .space-y-4 {
+          .coating-content .space-y-5 {
             gap: 12px !important;
             padding: 0 20px !important;
             position: relative !important;
             z-index: 30 !important;
           }
 
-          .coating-content .space-y-4 > div {
+          .coating-content .space-y-5 > div {
             margin-top: 0 !important;
             margin-bottom: 12px !important;
           }
 
-          .coating-content .space-y-4 h4 {
-            font-size: 18px !important;
+          .coating-content .space-y-5 h4 {
+            font-size: 20px !important;
             line-height: 26px !important;
           }
 
-          .coating-content .space-y-4 p {
-            font-size: 14px !important;
+          .coating-content .space-y-5 p {
+            font-size: 18px !important;
             line-height: 22px !important;
           }
 

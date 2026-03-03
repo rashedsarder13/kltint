@@ -1184,8 +1184,8 @@ export default function ComboPackageSection() {
           }
 
           h2 {
-            font-size: 28px !important;
-            line-height: 38px !important;
+            font-size: 32px !important;
+            line-height: 40px !important;
             padding: 0 20px !important;
             margin-bottom: 40px !important;
           }

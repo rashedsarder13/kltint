@@ -165,7 +165,7 @@ export default function WrappingCarouselLine() {
       {slides.map((slide, idx) => (
         <section
           key={slide.id}
-          className="relative w-full bg-[#010101] overflow-hidden wrapping-carousel-section"
+          className="relative w-full bg-[#010101] overflow-hidden wrapping-carousel-section pt-16 sm:pt-0"
           style={{ minHeight: "1033px" }}
         >
           {/* Main background (dark) */}
@@ -437,8 +437,8 @@ export default function WrappingCarouselLine() {
             height: auto !important;
             min-height: 800px !important;
             overflow: visible !important;
-            margin-top: 10px !important;
-            margin-bottom: 140px !important;
+            margin-top: 0px !important;
+            margin-bottom: 40px !important;
           }
 
           .wrapping-bg-car {
@@ -526,12 +526,12 @@ export default function WrappingCarouselLine() {
           }
 
           .wrapping-content .space-y-5 h4 {
-            font-size: 18px !important;
+            font-size: 20px !important;
             line-height: 26px !important;
           }
 
           .wrapping-content .space-y-5 p {
-            font-size: 14px !important;
+            font-size: 18px !important;
             line-height: 22px !important;
           }
 

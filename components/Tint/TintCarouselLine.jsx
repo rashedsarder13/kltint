@@ -185,7 +185,7 @@ export default function TintCarouselLine() {
       {slides.map((slide, idx) => (
         <section
           key={slide.id}
-          className="relative w-full bg-[#010101] overflow-hidden tint-carousel-section"
+          className="relative w-full bg-[#010101] overflow-hidden tint-carousel-section pt-16 sm:pt-0"
           style={{
             minHeight: "1000px",
           }}
@@ -318,7 +318,7 @@ export default function TintCarouselLine() {
                         {b.title}
                       </h4>
                       <p
-                        className="text-[18px] font-medium leading-[28px] max-w-[440px]"
+                        className="text-[20px] font-medium leading-[28px] max-w-[440px]"
                         style={{
                           color: "#A9A9A9",
                           fontFamily: "Montserrat",
@@ -559,12 +559,12 @@ export default function TintCarouselLine() {
           }
 
           .tint-content .space-y-5 h4 {
-            font-size: 18px !important;
+            font-size: 20px !important;
             line-height: 26px !important;
           }
 
           .tint-content .space-y-5 p {
-            font-size: 14px !important;
+            font-size: 18px !important;
             line-height: 22px !important;
           }
 

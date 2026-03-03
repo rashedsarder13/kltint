@@ -115,7 +115,7 @@ export default function VLTLevels() {
 
   return (
     <section
-      className="relative overflow-hidden bg-[#0A0A0C]"
+      className="relative overflow-hidden bg-[#0A0A0C] pt-24 sm:pt-0"
       style={{
         width: "100%",
         height: "1080px",
@@ -146,24 +146,34 @@ export default function VLTLevels() {
       {/* ========== MOBILE LAYOUT: All 3 cars stacked + grid ========== */}
       <div className="relative z-10 px-4 pt-6 pb-4 flex-col items-center vlt-mobile-layout">
         {/* Mobile Header */}
-        <h2
-          className="font-oswald text-center text-white mb-4"
-          style={{
-            fontWeight: 500,
-            fontSize: "32px",
-            lineHeight: "40px",
-            letterSpacing: "0%",
-            textTransform: "capitalize",
-          }}
-        >
-          Optimal VLT Levels
-        </h2>
-
-        {/* Blue shadow/glow under header */}
-        <div className="mobile-header-glow" />
+        <div className="vlt-mobile-header">
+          <div className="mobile-header-glow" />
+          <h2
+            className="vlt-mobile-title"
+            style={{
+              position: "relative",
+              zIndex: 1,
+              fontFamily: "Oswald, sans-serif",
+              fontWeight: 700,
+              fontSize: "32px",
+              lineHeight: "72px",
+              letterSpacing: "0.24px",
+              textAlign: "center",
+              textTransform: "capitalize",
+              background:
+                "linear-gradient(137.95deg, #7A96AC 2.28%, #EAEFF3 19.8%, #C2D4E1 32.94%, #FFFFFF 50.16%, #D4DEE5 62.15%, #ABBDC8 78.69%, #BCCAD7 95.24%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              margin: 0,
+            }}
+          >
+            Optimal VLT Levels
+          </h2>
+        </div>
 
         {/* All 3 cars stacked */}
-        <div className="w-full flex flex-col items-center gap-2 mb-4">
+        <div className="w-full flex flex-col items-center gap-2 mb-4 pt-24">
           {windowTypes.map((wt) => (
             <div key={wt.name} className="w-full flex justify-center">
               <img
@@ -473,15 +483,30 @@ export default function VLTLevels() {
           display: none;
         }
 
+        .vlt-mobile-header {
+          position: relative;
+          width: 100%;
+          max-width: 1200px;
+          height: 72px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 20px auto;
+        }
+
         /* Blue glow under mobile header */
         .mobile-header-glow {
-          width: 290px;
-          height: 28px;
-          margin: -40px auto 16px auto;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 590px;
+          height: 38px;
           border-radius: 50%;
           background: #032ebd;
           filter: blur(40px);
-          opacity: 1;
+          opacity: 0.8;
+          z-index: 0;
         }
 
         /* Mobile car images */
