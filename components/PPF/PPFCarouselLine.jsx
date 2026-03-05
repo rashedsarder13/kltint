@@ -249,7 +249,7 @@ export default function PPFCarouselLine() {
 
               {/* Main subtitle */}
               <h1
-                className="text-[52px] lg:text-[60px] font-bold font-oswald uppercase text-transparent bg-clip-text leading-[1.1] tracking-[0.06em] mb-6 whitespace-pre-line"
+                className="text-[52px]  font-bold font-oswald text-transparent bg-clip-text leading-[1.2] tracking-[0.06em] mb-6 whitespace-pre-line"
                 style={{
                   width: "1152px",
                   backgroundImage:

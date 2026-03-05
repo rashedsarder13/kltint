@@ -10,7 +10,7 @@ const slides = [
     badge: "Why Need the combo package?",
     title: "All-in-One Vehicle Protection: Tint, Coating, & PPF in One Package",
     cta: "Explore Combo Deals",
-    image: "/combo/slide1.png",
+    image: "/combo/slide11.png",
     mobileImage: "/combo/mobile/slide1.jpg",
     benefits: [
       {
@@ -192,7 +192,7 @@ export default function ComboCarouselLine() {
 
               {/* Main subtitle */}
               <h1
-                className="text-[52px] lg:text-[60px] font-bold font-oswald uppercase text-transparent bg-clip-text leading-[1.1] tracking-[0.06em] mb-16 whitespace-pre-line"
+                className="text-[52px]  font-bold font-oswald text-transparent bg-clip-text leading-[1.2] tracking-[0.06em] mb-6 whitespace-pre-line"
                 style={{
                   width: "1152px",
                   backgroundImage:
@@ -310,41 +310,6 @@ export default function ComboCarouselLine() {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Page Counter - Bottom Right */}
-          <div
-            className="absolute z-30 combo-page-counter"
-            style={{
-              bottom: "80px",
-              right: "112px",
-              display: "flex",
-              alignItems: "baseline",
-              gap: "4px",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "Oswald",
-                fontSize: "60px",
-                fontWeight: 700,
-                lineHeight: "68px",
-                color: "#FFFFFF",
-              }}
-            >
-              {idx + 1}
-            </span>
-            <span
-              style={{
-                fontFamily: "Oswald",
-                fontSize: "32px",
-                fontWeight: 500,
-                lineHeight: "40px",
-                color: "#A9A9A9",
-              }}
-            >
-              /{slides.length}
-            </span>
           </div>
         </section>
       ))}
