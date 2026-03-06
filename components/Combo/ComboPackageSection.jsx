@@ -49,7 +49,7 @@ const packagesData = {
       particle: "80 nm",
     },
     {
-      name: "Mystic Guard",
+      name: "Mystric Guard",
       price: "1849",
       original: "",
       filmType: "Nano Ceramic Tint + Graphene Coating",
@@ -410,6 +410,41 @@ const packagesData = {
   ],
 };
 
+const comboPackageImageByName = {
+  "tint-coating": {
+    "Crystal Guard": "/combo/package/tint-coating/crystal-guard.jpg",
+    "Harmony Guard": "/combo/package/tint-coating/harmony-guard.png",
+    "Mystric Guard": "/combo/package/tint-coating/mystric-guard.png",
+    "Obsidian Ensemble": "/combo/package/tint-coating/obsidian-ensemble.png",
+    "Miraze Radiance": "/combo/package/tint-coating/miraze-radiance.png",
+    "Eternal Guard": "/combo/package/tint-coating/eternal-guard.png",
+  },
+  "tint-ppf": {
+    "Basic Protection": "/combo/package/tint-ppf/basic-protection.jpg",
+    "Standard Protection": "/combo/package/tint-ppf/standard-protection.png",
+    "Enhanced Protection": "/combo/package/tint-ppf/enhanced-protection.png",
+    "Premium Protection": "/combo/package/tint-ppf/premium-protection.png",
+    "Advanced Protection": "/combo/package/tint-ppf/advanced-protection.png",
+    "Elite Protection": "/combo/package/tint-ppf/elite-protection.png",
+    "Ultimate Protection": "/combo/package/tint-ppf/ultimate-protection.png",
+  },
+  "coating-ppf": {
+    "Sentinel Suite": "/combo/package/coating-ppf/sentinel-suite.jpg",
+    "Zenith Armor": "/combo/package/coating-ppf/zenith-armor.png",
+    "Celestial Shield Collection": "/combo/package/coating-ppf/celestial-shield-collection.png",
+    "Vanguard Shield Synergy": "/combo/package/coating-ppf/vanguard-shield-synergy.png",
+    "Infinite Guard Matrix": "/combo/package/coating-ppf/infinite-guard-matrix.png",
+  },
+  "tint-coating-ppf": {
+    "Elite Protection": "/combo/package/tint-coating-ppf/elite-protection.jpg",
+    "Advance Armor": "/combo/package/tint-coating-ppf/advance-armor.png",
+    "Advance Guard": "/combo/package/tint-coating-ppf/advance-gurd.png",
+    "Advanced Defense": "/combo/package/tint-coating-ppf/advance-defence.png",
+    "Advance Shield": "/combo/package/tint-coating-ppf/advance-shield.png",
+    "Track Dominator": "/combo/package/tint-coating-ppf/track-dominator.png",
+  },
+};
+
 export default function ComboPackageSection() {
   const [activeCombo, setActiveCombo] = useState("tint-coating");
   const [activeFilm, setActiveFilm] = useState(
@@ -422,15 +457,32 @@ export default function ComboPackageSection() {
   const currentPackages = packagesData[activeCombo];
   const selected =
     currentPackages.find((f) => f.name === activeFilm) || currentPackages[0];
+  const selectedPackageImage =
+    comboPackageImageByName[activeCombo]?.[selected.name] ??
+    (() => {
+      // warn if mapping is missing so we can spot typos or missing files
+      console.warn(
+        `combo image missing for combo="${activeCombo}" package="${selected.name}"`
+      );
+      return "/combo/package/tint-coating/crystal-guard.jpg"; // generic fallback
+    })();
+  const activeIndex = currentPackages.findIndex((p) => p.name === activeFilm);
 
   // Build a dynamic, ordered list of specs to show in the preview —
   // only items with a truthy value will render.
   const specsKV = [
-    { label: "Film Type", value: selected.filmType },
-    { label: "Thickness", value: selected.thickness },
-    { label: "Color Options", value: selected.colorOptions },
-    { label: "Effect Options", value: selected.effectOptions },
-    { label: "Warranty", value: selected.warranty || null },
+    { label: "UV", value: selected.uv || null },
+    { label: "IRR", value: selected.irr || null },
+    { label: "Thickness", value: selected.thickness || selected.tpu || null },
+    {
+      label: "Warranty",
+      value:
+        selected.warranty ||
+        [selected.tintWarranty, selected.coatingWarranty].filter(Boolean).join(" / ") ||
+        null,
+    },
+    { label: "Hardness", value: selected.hardness || null },
+    { label: "Gloss", value: selected.gloss || null },
   ].filter((s) => s.value);
 
   const handleBookNow = () => {
@@ -452,6 +504,20 @@ export default function ComboPackageSection() {
     setShowBookingModal(false);
     setShowCheckoutModal(false);
     setBookingData(null);
+  };
+
+  const handlePrevPackage = () => {
+    const nextIndex =
+      activeIndex <= 0 ? currentPackages.length - 1 : Math.max(0, activeIndex - 1);
+    setActiveFilm(currentPackages[nextIndex].name);
+  };
+
+  const handleNextPackage = () => {
+    const nextIndex =
+      activeIndex >= currentPackages.length - 1
+        ? 0
+        : Math.min(currentPackages.length - 1, activeIndex + 1);
+    setActiveFilm(currentPackages[nextIndex].name);
   };
 
   return (
@@ -961,19 +1027,16 @@ export default function ComboPackageSection() {
                 top: "26px",
                 right: "0px",
                 zIndex: 2,
-                width: "430px",
-                height: "278px",
-                border: "1px solid",
-                borderImageSource:
-                  "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                borderImageSlice: 1,
+                width: "600px",
+                height: "400px",
                 opacity: 1,
               }}
             >
               <Image
-                src="/combo/pkg-car.png"
+                src={selectedPackageImage}
                 alt={`${selected.name} package car`}
-                fill
+                width={1000}
+                height={1000}
                 className="object-cover"
               />
             </div>
@@ -1116,6 +1179,15 @@ export default function ComboPackageSection() {
                 </span>
               </div>
             </button>
+
+            <div className="ppf-mobile-arrows" aria-label="Package navigation">
+              <button type="button" onClick={handlePrevPackage} aria-label="Previous package">
+                ←
+              </button>
+              <button type="button" onClick={handleNextPackage} aria-label="Next package">
+                →
+              </button>
+            </div>
           </div>
         </div>
         <div
@@ -1170,6 +1242,22 @@ export default function ComboPackageSection() {
         }
         .ppf-info-dynamic {
           display: block;
+        }
+
+        .ppf-info-dynamic > div {
+          grid-template-columns: 1fr !important;
+          gap: 12px !important;
+        }
+
+        .ppf-info-dynamic > div > div:nth-child(n + 5) {
+          display: none;
+        }
+
+        /* desktop should not be affected by .ppf-car; mobile-only rules appear in the
+           @media (max-width: 640px) section */
+
+        .ppf-mobile-arrows {
+          display: none;
         }
 
         @media (max-width: 640px) {
@@ -1240,10 +1328,14 @@ export default function ComboPackageSection() {
           /* Preview card */
           .ppf-preview {
             width: 100% !important;
-            height: 310px !important;
-            padding: 0 !important;
+            height: auto !important;
+            min-height: 0 !important;
+            padding: 12px !important;
             position: relative !important;
             display: block !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
             border: 1px solid !important;
             border-image-source: linear-gradient(
               135.31deg,
@@ -1262,13 +1354,14 @@ export default function ComboPackageSection() {
 
           /* Car image — top right */
           .ppf-car {
-            position: absolute !important;
-            top: 0 !important;
-            right: 0 !important;
+            position: relative !important;
+            top: auto !important;
+            right: auto !important;
             left: auto !important;
             bottom: auto !important;
-            width: 58% !important;
-            height: 185px !important;
+            order: 1 !important;
+            width: 100% !important;
+            height: 170px !important;
             border: none !important;
             border-image-source: none !important;
             z-index: 2 !important;
@@ -1289,30 +1382,23 @@ export default function ComboPackageSection() {
 
           /* Dynamic specs info — top left */
           .ppf-info-dynamic {
-            position: absolute !important;
-            top: 14px !important;
-            left: 14px !important;
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            order: 2 !important;
             z-index: 3 !important;
             display: flex !important;
             flex-direction: column;
             gap: 0;
-            width: 38% !important;
+            width: 100% !important;
             padding: 0 !important;
             opacity: 1 !important;
-            order: unset !important;
           }
 
           .ppf-info-dynamic > div {
             display: grid !important;
             grid-template-columns: 1fr !important;
             gap: 8px !important;
-          }
-
-          /* Show Film Type (1st), Thickness (2nd), Warranty (5th)
-             Hide Color Options (3rd) and Effect Options (4th) */
-          .ppf-info-dynamic > div > div:nth-child(3),
-          .ppf-info-dynamic > div > div:nth-child(4) {
-            display: none !important;
           }
 
           .ppf-info-dynamic > div > div > div:first-child {
@@ -1329,19 +1415,7 @@ export default function ComboPackageSection() {
 
           /* Price — bottom left, clear of book button */
           .ppf-footer {
-            position: absolute !important;
-            bottom: 72px !important;
-            left: 14px !important;
-            right: auto !important;
-            display: flex !important;
-            flex-direction: row;
-            gap: 6px;
-            align-items: baseline;
-            width: auto !important;
-            z-index: 3 !important;
-            opacity: 1 !important;
-            padding: 0 !important;
-            order: unset !important;
+            display: none !important;
           }
 
           .ppf-footer .price {
@@ -1362,18 +1436,37 @@ export default function ComboPackageSection() {
 
           /* Book button — full width at bottom of card */
           .ppf-bookbtn {
-            position: absolute !important;
-            bottom: 12px !important;
-            left: 12px !important;
-            right: 12px !important;
+            position: relative !important;
+            order: 3 !important;
+            bottom: auto !important;
+            left: auto !important;
+            right: auto !important;
             top: auto !important;
-            width: calc(100% - 24px) !important;
+            width: 100% !important;
             max-width: none !important;
             height: 48px !important;
             padding: 3px !important;
             border-radius: 45px !important;
             opacity: 1 !important;
-            order: unset !important;
+          }
+
+          .ppf-mobile-arrows {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            order: 4;
+            margin-top: 2px;
+          }
+
+          .ppf-mobile-arrows button {
+            width: 40px;
+            height: 40px;
+            border-radius: 9999px;
+            border: 1px solid #3f3f46;
+            color: #d4dee5;
+            background: rgba(10, 10, 12, 0.85);
+            font-size: 20px;
+            line-height: 1;
           }
 
           .ppf-bookbtn span {

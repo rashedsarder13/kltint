@@ -14,7 +14,7 @@ const filmTypes = [
       "Affordable Entry Point",
       "Deep & Darker Tint",
     ],
-    image: "/tint/filetype.svg",
+    image: "/tint-new/film-type/nano-carbon-film.png",
   },
   {
     id: "ceramic-hd",
@@ -25,14 +25,14 @@ const filmTypes = [
       "High VLT control",
       "Durable, long-lasting look",
     ],
-    image: "/tint/filetype.png",
+    image: "/tint-new/film-type/ceramic-hd-film.png",
   },
   {
     id: "sputter-hd",
     name: "Sputter HD Metallic Film",
     tag: "Metallic finish with good rejection",
     features: ["Deeper, darker tint", "UV protection", "Metallic sheen"],
-    image: "/tint/filetype.png",
+    image: "/tint-new/film-type/sputter-hd-metalic-film.png",
   },
   {
     id: "nano-ceramic",
@@ -43,7 +43,7 @@ const filmTypes = [
       "99% UV blocking",
       "Clarity and durability",
     ],
-    image: "/tint/filetype.png",
+    image: "/tint-new/film-type/nano-ceramic-film.png",
   },
   {
     id: "12l-sputter",
@@ -54,7 +54,7 @@ const filmTypes = [
       "Enhanced durability",
       "Deeper tint",
     ],
-    image: "/tint/filetype.svg",
+    image: "/tint-new/film-type/12-layer-sputter-uhd-film.png",
   },
 ];
 
@@ -452,8 +452,8 @@ export default function FilmTypes() {
                 >
                   {/* Base diagram image only */}
                   <Image
-                    src="/tint/filetype.svg"
-                    alt=""
+                    src={selected.image}
+                    alt={selected.name}
                     width={277}
                     height={262}
                     className="filmtypes-diagram-image"

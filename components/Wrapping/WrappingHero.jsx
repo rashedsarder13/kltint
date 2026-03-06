@@ -31,7 +31,7 @@ export default function WrappingHero() {
 
           {/* Main Content */}
           <div className="flex-1 max-w-4xl">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-[48px] font-bold font-oswald leading-[1.2] mb-3 md:mb-4 lg:mb-5 gradient-title">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-[48px] uppercase font-bold font-oswald leading-[1.2] mb-3 md:mb-4 lg:mb-5 gradient-title">
               Transform Your Car With Endless Colors
             </h1>
             <p className="text-sm md:text-base lg:text-lg description-text">

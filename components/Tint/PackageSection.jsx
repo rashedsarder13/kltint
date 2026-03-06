@@ -102,13 +102,40 @@ const packages = [
   },
 ];
 
+const packageImageByName = {
+  "Silver Package": "/tint/package/tint-silver-package.jpg",
+  "Hot Deal": "/tint/package/tint-hot-deal.png",
+  "Gold Package": "/tint/package/tint-gold-package.png",
+  "Diamond Package": "/tint/package/tint-diamond-package.png",
+  "Platinum Package": "/tint/package/tint-platinum-package.png",
+  "Titanium Package": "/tint/package/tint-titanium-package.png",
+  "Elegance Signature": "/tint/package/tint-elegance-package.png",
+};
+
 export default function PackageSection() {
   const [activeFilm, setActiveFilm] = useState("Silver Package");
 
   const selected = packages.find((f) => f.name === activeFilm) || packages[0];
+  const selectedPackageImage =
+    packageImageByName[selected.name] || "/tint/package/tint-silver-package.jpg";
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [bookingData, setBookingData] = useState(null);
+
+  const activeIndex = packages.findIndex((p) => p.name === activeFilm);
+  const cleanMetricValue = (value) =>
+    typeof value === "string" ? value.replace(/^up to\s*/i, "") : value;
+
+  const handlePrevPackage = () => {
+    const nextIndex =
+      activeIndex <= 0 ? packages.length - 1 : Math.max(0, activeIndex - 1);
+    setActiveFilm(packages[nextIndex].name);
+  };
+  const handleNextPackage = () => {
+    const nextIndex =
+      activeIndex >= packages.length - 1 ? 0 : Math.min(packages.length - 1, activeIndex + 1);
+    setActiveFilm(packages[nextIndex].name);
+  };
 
   const handleBookNow = () => {
     setShowBookingModal(true);
@@ -160,27 +187,6 @@ export default function PackageSection() {
       setTimeout(doScroll, 450);
     }
   };
-
-  // Build a simple features list from the package data (packages don't include `tag`/`features`)
-  const features = [
-    `UV: ${selected.uv}`,
-    `IRR: ${selected.irr}`,
-    `TSER: ${selected.tser}`,
-    `Film: ${selected.film}`,
-    `Tech: ${selected.tech}`,
-    `Warranty: ${selected.warranty}`,
-    selected.price ? `Price: ₹${selected.price}` : null,
-  ].filter(Boolean);
-
-  // Structured key/value features for two-column layout (label / value)
-  const featuresKV = [
-    { label: "UV", value: selected.uv },
-    { label: "IRR", value: selected.irr },
-    { label: "TSER", value: selected.tser },
-    { label: "Film", value: selected.film },
-    { label: "Technology", value: selected.tech },
-    { label: "Warranty", value: selected.warranty },
-  ];
 
   return (
     <section
@@ -398,15 +404,15 @@ export default function PackageSection() {
                       width: "100%",
                       ...(active
                         ? {
-                            background:
-                              "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                            WebkitBackgroundClip: "text",
-                            WebkitTextFillColor: "transparent",
-                            backgroundClip: "text",
-                          }
+                          background:
+                            "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
+                          WebkitBackgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          backgroundClip: "text",
+                        }
                         : {
-                            color: "rgba(169, 169, 169, 1)",
-                          }),
+                          color: "rgba(169, 169, 169, 1)",
+                        }),
                     }}
                   >
                     {film.name}
@@ -524,97 +530,82 @@ export default function PackageSection() {
               >
                 <div>
                   <div
+                    className="spec-line"
                     style={{
                       fontFamily: "Montserrat, sans-serif",
                       fontWeight: 700,
                       fontSize: "18px",
-                      lineHeight: "22px",
-                      color: "#DDE6EE",
-                      marginBottom: "6px",
-                    }}
-                  >
-                    UV
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "20px",
                       lineHeight: "28px",
-                      maxWidth: "100%",
-                      overflowWrap: "break-word",
-                      background:
-                        "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
+                      color: "#DDE6EE",
                     }}
                   >
-                    {selected.uv}
+                    UV:{" "}
+                    <span
+                      className="spec-value"
+                      style={{
+                        background:
+                          "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
+                      {cleanMetricValue(selected.uv)}
+                    </span>
                   </div>
                 </div>
 
                 <div>
                   <div
+                    className="spec-line"
                     style={{
                       fontFamily: "Montserrat, sans-serif",
                       fontWeight: 700,
                       fontSize: "18px",
-                      lineHeight: "22px",
-                      color: "#DDE6EE",
-                      marginBottom: "6px",
-                    }}
-                  >
-                    TSER
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "20px",
                       lineHeight: "28px",
-                      maxWidth: "100%",
-                      overflowWrap: "break-word",
-                      background:
-                        "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
+                      color: "#DDE6EE",
                     }}
                   >
-                    {selected.tser}
+                    TSER:{" "}
+                    <span
+                      className="spec-value"
+                      style={{
+                        background:
+                          "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
+                      {cleanMetricValue(selected.tser)}
+                    </span>
                   </div>
                 </div>
 
                 <div>
                   <div
+                    className="spec-line"
                     style={{
                       fontFamily: "Montserrat, sans-serif",
                       fontWeight: 700,
                       fontSize: "18px",
-                      lineHeight: "22px",
-                      color: "#DDE6EE",
-                      marginBottom: "6px",
-                    }}
-                  >
-                    IRR
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "20px",
                       lineHeight: "28px",
-                      maxWidth: "100%",
-                      overflowWrap: "break-word",
-                      background:
-                        "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
+                      color: "#DDE6EE",
                     }}
                   >
-                    {selected.irr}
+                    IRR:{" "}
+                    <span
+                      className="spec-value"
+                      style={{
+                        background:
+                          "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
+                      {cleanMetricValue(selected.irr)}
+                    </span>
                   </div>
                 </div>
 
@@ -684,33 +675,28 @@ export default function PackageSection() {
 
                 <div>
                   <div
+                    className="spec-line"
                     style={{
                       fontFamily: "Montserrat, sans-serif",
                       fontWeight: 700,
                       fontSize: "18px",
-                      lineHeight: "22px",
-                      color: "#DDE6EE",
-                      marginBottom: "6px",
-                    }}
-                  >
-                    Warranty
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "20px",
                       lineHeight: "28px",
-                      maxWidth: "100%",
-                      overflowWrap: "break-word",
-                      background:
-                        "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
+                      color: "#DDE6EE",
                     }}
                   >
-                    {selected.warranty}
+                    Warranty:{" "}
+                    <span
+                      className="spec-value"
+                      style={{
+                        background:
+                          "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
+                      {selected.warranty}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -721,22 +707,20 @@ export default function PackageSection() {
               className="filmtypes-car"
               style={{
                 position: "absolute",
-                top: "26px",
-                right: "0px",
+                top: "28px",
+                right: "4px",
                 zIndex: 2,
-                width: "430px",
-                height: "278px",
-                border: "1px solid",
-                borderImageSource:
-                  "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                borderImageSlice: 1,
+                width: "600px",
+                height: "400px",
+                border: "none",
                 opacity: 1,
               }}
             >
               <Image
-                src="/tint/pkg-detail.png"
+                src={selectedPackageImage}
                 alt={`${selected.name} package car`}
-                fill
+                width={1000}
+                height={1000}
                 className="object-cover"
               />
             </div>
@@ -879,6 +863,15 @@ export default function PackageSection() {
                 </span>
               </div>
             </button>
+
+            <div className="filmtypes-mobile-arrows" aria-label="Package navigation">
+              <button type="button" onClick={handlePrevPackage} aria-label="Previous package">
+                ←
+              </button>
+              <button type="button" onClick={handleNextPackage} aria-label="Next package">
+                →
+              </button>
+            </div>
           </div>
         </div>
 
@@ -966,6 +959,23 @@ export default function PackageSection() {
           -webkit-overflow-scrolling: touch;
         }
 
+        .filmtypes-info > div {
+          grid-template-columns: 1fr !important;
+          gap: 12px !important;
+        }
+
+        .filmtypes-info > div > div:nth-child(4),
+        .filmtypes-info > div > div:nth-child(5) {
+          display: none;
+        }
+
+        /* .filmtypes-car rules are now only applied inside the mobile media query
+           so that the class does not affect desktop layout */
+
+        .filmtypes-mobile-arrows {
+          display: none;
+        }
+
         @media (max-width: 640px) {
           section {
             height: auto !important;
@@ -1022,9 +1032,13 @@ export default function PackageSection() {
           /* Preview card */
           .filmtypes-preview {
             width: 100% !important;
-            height: 310px !important;
-            padding: 0 !important;
+            height: auto !important;
+            min-height: 0 !important;
+            padding: 12px !important;
             position: relative !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
             border: 1px solid !important;
             border-image-source: linear-gradient(
               135.31deg,
@@ -1043,13 +1057,14 @@ export default function PackageSection() {
 
           /* Car image — top right */
           .filmtypes-car {
-            position: absolute !important;
-            top: 0 !important;
-            right: 0 !important;
+            position: relative !important;
+            top: auto !important;
+            right: auto !important;
             left: auto !important;
             bottom: auto !important;
-            width: 58% !important;
-            height: 185px !important;
+            order: 1 !important;
+            width: 100% !important;
+            height: 170px !important;
             border: none !important;
             border-image-source: none !important;
             z-index: 2 !important;
@@ -1065,55 +1080,62 @@ export default function PackageSection() {
 
           /* Features info — top left */
           .filmtypes-info {
-            position: absolute !important;
-            top: 14px !important;
-            left: 14px !important;
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            order: 2 !important;
             z-index: 3 !important;
             display: flex !important;
             flex-direction: column;
             gap: 0;
-            width: 38% !important;
+            width: 100% !important;
             padding: 0;
             opacity: 1 !important;
           }
 
           .filmtypes-info > div {
             display: grid !important;
-            grid-template-columns: 1fr !important;
-            gap: 8px !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 12px 34px !important;
+            justify-items: start !important;
+            align-items: start !important;
           }
 
-          /* Hide Film Type (4th) and Technology (5th) — keep UV, TSER, IRR, Warranty */
-          .filmtypes-info > div > div:nth-child(4),
-          .filmtypes-info > div > div:nth-child(5) {
-            display: none !important;
+          .filmtypes-info > div > div:nth-child(1) {
+            grid-column: 1;
+            grid-row: 1;
           }
 
-          .filmtypes-info > div > div > div:first-child {
-            font-size: 10px !important;
-            line-height: 13px !important;
-            margin-bottom: 1px !important;
+          .filmtypes-info > div > div:nth-child(2) {
+            grid-column: 2;
+            grid-row: 1;
+          }
+
+          .filmtypes-info > div > div:nth-child(3) {
+            grid-column: 1;
+            grid-row: 2;
+          }
+
+          .filmtypes-info > div > div:nth-child(6) {
+            grid-column: 2;
+            grid-row: 2;
+          }
+
+          .filmtypes-info .spec-line {
+            font-size: 19px !important;
+            line-height: 26px !important;
             color: #a0afbb !important;
+            text-align: left !important;
           }
 
-          .filmtypes-info > div > div > div:last-child {
-            font-size: 12px !important;
-            line-height: 16px !important;
+          .filmtypes-info .spec-value {
+            font-size: 21px !important;
+            line-height: 28px !important;
           }
 
           /* Price — bottom left, clear of book button */
           .filmtypes-footer {
-            position: absolute !important;
-            bottom: 72px !important;
-            left: 14px !important;
-            right: auto !important;
-            display: flex !important;
-            flex-direction: row;
-            gap: 6px;
-            align-items: baseline;
-            width: auto !important;
-            z-index: 3 !important;
-            opacity: 1 !important;
+            display: none !important;
           }
 
           .filmtypes-footer .price {
@@ -1136,17 +1158,37 @@ export default function PackageSection() {
 
           /* Book button — full width at bottom of card */
           .filmtypes-bookbtn {
-            position: absolute !important;
-            bottom: 12px !important;
-            left: 12px !important;
-            right: 12px !important;
+            position: relative !important;
+            order: 3 !important;
+            bottom: auto !important;
+            left: auto !important;
+            right: auto !important;
             top: auto !important;
-            width: calc(100% - 24px) !important;
+            width: 100% !important;
             max-width: none !important;
             height: 48px !important;
             padding: 3px !important;
             border-radius: 45px !important;
             opacity: 1 !important;
+          }
+
+          .filmtypes-mobile-arrows {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            order: 4;
+            margin-top: 2px;
+          }
+
+          .filmtypes-mobile-arrows button {
+            width: 40px;
+            height: 40px;
+            border-radius: 9999px;
+            border: 1px solid #3f3f46;
+            color: #d4dee5;
+            background: rgba(10, 10, 12, 0.85);
+            font-size: 20px;
+            line-height: 1;
           }
 
           .filmtypes-bookbtn span {

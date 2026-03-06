@@ -448,7 +448,11 @@ const Accordion = () => {
                           fontWeight: 600,
                           fontSize: "16px",
                           lineHeight: "24px",
-                          color: "#FFFFFF",
+                          background:
+                            "linear-gradient(90.29deg, #9E8976 -48.84%, #7A5E50 -9.49%, #C6A488 17.07%, #F6D0AB 33.9%, #9D774E 64.26%, #C99B70 74.48%, #795F52 99.02%)",
+                          WebkitBackgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          backgroundClip: "text",
                         }}
                       >
                         {item.question}
@@ -791,7 +795,11 @@ const Accordion = () => {
                         fontWeight: 600,
                         fontSize: "18px",
                         lineHeight: "28px",
-                        color: "#FFFFFF",
+                        background:
+                          "linear-gradient(90.29deg, #9E8976 -48.84%, #7A5E50 -9.49%, #C6A488 17.07%, #F6D0AB 33.9%, #9D774E 64.26%, #C99B70 74.48%, #795F52 99.02%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
                         maxWidth: "90%",
                       }}
                     >
