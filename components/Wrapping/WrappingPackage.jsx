@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import BookingModal from "../shared/BookingModal";
+import Button from "../shared/Button";
 import CheckoutModal from "../shared/CheckoutModal";
 
 const packages = [
@@ -29,10 +30,27 @@ const packages = [
   },
 ];
 
+const packageImageByName = {
+  "VINYL ENHANCEMENT": "/wrapping/package/vinyl-enhancement.jpg",
+  "VINYL MASTERPIECE": "/wrapping/package/vinyl-masterpiece.jpg",
+};
+
+const wrappingPartnerLogos = [
+  "/home/cardPayment/first/3.png",
+  "/home/cardPayment/first/4.png",
+  "/home/cardPayment/first/5.png",
+  "/home/cardPayment/first/6.png",
+  "/home/cardPayment/first/7.png",
+  "/home/cardPayment/first/8.png",
+];
+
 export default function PackageSection() {
   const [activeFilm, setActiveFilm] = useState("VINYL ENHANCEMENT");
 
   const selected = packages.find((f) => f.name === activeFilm) || packages[0];
+  const selectedPackageImage =
+    packageImageByName[selected.name] || "/wrapping/package/vinyl-enhancement.jpg";
+  const activeIndex = packages.findIndex((p) => p.name === activeFilm);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [bookingData, setBookingData] = useState(null);
@@ -56,6 +74,18 @@ export default function PackageSection() {
     setShowBookingModal(false);
     setShowCheckoutModal(false);
     setBookingData(null);
+  };
+
+  const handlePrevPackage = () => {
+    const nextIndex =
+      activeIndex <= 0 ? packages.length - 1 : Math.max(0, activeIndex - 1);
+    setActiveFilm(packages[nextIndex].name);
+  };
+
+  const handleNextPackage = () => {
+    const nextIndex =
+      activeIndex >= packages.length - 1 ? 0 : Math.min(packages.length - 1, activeIndex + 1);
+    setActiveFilm(packages[nextIndex].name);
   };
 
   // Build a simple features list from the package data (packages don't include `tag`/`features`)
@@ -593,19 +623,16 @@ export default function PackageSection() {
                 top: "26px",
                 right: "0px",
                 zIndex: 2,
-                width: "430px",
-                height: "278px",
-                border: "1px solid",
-                borderImageSource:
-                  "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                borderImageSlice: 1,
+                width: "600px",
+                height: "400px",
                 opacity: 1,
               }}
             >
               <Image
-                src="/wrapping/pkg-car.png"
+                src={selectedPackageImage}
                 alt={`${selected.name} package car`}
-                fill
+                width={1000}
+                height={1000}
                 className="object-cover"
               />
             </div>
@@ -748,6 +775,15 @@ export default function PackageSection() {
                 </span>
               </div>
             </button>
+
+            <div className="filmtypes-mobile-arrows" aria-label="Package navigation">
+              <button type="button" onClick={handlePrevPackage} aria-label="Previous package">
+                ←
+              </button>
+              <button type="button" onClick={handleNextPackage} aria-label="Next package">
+                →
+              </button>
+            </div>
           </div>
         </div>
 
@@ -762,7 +798,7 @@ export default function PackageSection() {
               alignItems: "center",
             }}
           >
-            {/* Left: Contact panel (uses existing image) */}
+            {/* Left: Contact panel (custom design, no static banner image) */}
             <div
               style={{
                 width: "95%",
@@ -773,16 +809,38 @@ export default function PackageSection() {
                 background: "transparent",
               }}
             >
-              <Link href="/contact">
-                <Image
-                  src="/wrapping/wrappingshortbanner2.svg"
-                  alt="Contact panel"
-                  width={720}
-                  height={178}
-                  className="object-cover w-full h-auto"
-                  style={{ display: "block", width: "100%", height: "100%" }}
-                />
-              </Link>
+              <div className="wrapping-contact-banner">
+                <div className="wrapping-contact-banner__left">
+                  <h3 className="wrapping-contact-banner__title">
+                    Are You Looking For Wrapping
+                    <br />
+                    With Different Brand?
+                  </h3>
+                </div>
+
+                <div className="wrapping-contact-banner__right" aria-label="Partner banks">
+                  {wrappingPartnerLogos.map((logoSrc, index) => (
+                    <div key={logoSrc} className="wrapping-contact-banner__logo-card">
+                      <Image
+                        src={logoSrc}
+                        alt={`Partner logo ${index + 1}`}
+                        width={146}
+                        height={70}
+                        className="wrapping-contact-banner__logo-image"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <Link href="/contact" className="wrapping-contact-banner__cta-link">
+                  <Button
+                    text="Contact Us"
+                    width={300}
+                    height={62}
+                    className="wrapping-contact-banner__cta-btn"
+                  />
+                </Link>
+              </div>
             </div>
 
             {/* Right: Pay-in-3 banner */}
@@ -825,6 +883,97 @@ export default function PackageSection() {
           -webkit-overflow-scrolling: touch;
         }
 
+        .filmtypes-info > div {
+          grid-template-columns: 1fr !important;
+          gap: 12px !important;
+        }
+
+        .filmtypes-info > div > div:nth-child(4),
+        .filmtypes-info > div > div:nth-child(5) {
+          display: none;
+        }
+
+        /* desktop should not be affected by .filmtypes-car; mobile-only rules are in the
+           media query below */
+
+        .filmtypes-mobile-arrows {
+          display: none;
+        }
+
+        .wrapping-contact-banner {
+          position: relative;
+          display: grid;
+          grid-template-columns: minmax(300px, 1.15fr) 1.7fr;
+          grid-template-areas:
+            "left right"
+            "cta right";
+          gap: 40px;
+          align-items: center;
+          padding: 28px 36px;
+          background:
+            radial-gradient(circle at 14% 88%, rgba(243, 196, 64, 0.18), rgba(0, 0, 0, 0) 34%),
+            linear-gradient(102deg, #060b12 0%, #0e1218 44%, #1a1b1a 100%);
+        }
+
+        .wrapping-contact-banner__left {
+          grid-area: left;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          align-items: flex-start;
+        }
+
+        .wrapping-contact-banner__title {
+          margin: 0;
+          font-family: "Oswald", sans-serif;
+          font-weight: 700;
+          font-size: clamp(28px, 2.35vw, 42px);
+          line-height: 1.15;
+          letter-spacing: 0.3px;
+          color: #deebf8;
+          text-wrap: balance;
+        }
+
+        .wrapping-contact-banner__cta-link {
+          grid-area: cta;
+          display: inline-flex;
+          width: min(360px, 100%);
+          justify-self: start;
+          text-decoration: none;
+        }
+
+        .wrapping-contact-banner__cta-link:hover {
+          transform: translateY(-1px) scale(1.01);
+          transition: transform 0.22s ease;
+        }
+
+        .wrapping-contact-banner__right {
+          grid-area: right;
+          display: grid;
+          grid-template-columns: repeat(3, minmax(132px, 1fr));
+          gap: 16px;
+          justify-items: stretch;
+        }
+
+        .wrapping-contact-banner__logo-card {
+          background: #2f3336;
+          border-radius: 6px;
+          padding: 8px;
+          min-height: 76px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+        }
+
+        .wrapping-contact-banner__logo-image {
+          width: 100%;
+          height: auto;
+          max-height: 58px;
+          object-fit: contain;
+          border-radius: 2px;
+        }
+
         @media (max-width: 640px) {
           .filmtypes-layout {
             flex-direction: column;
@@ -863,9 +1012,13 @@ export default function PackageSection() {
           /* Preview card */
           .filmtypes-preview {
             width: 100% !important;
-            height: 310px !important;
-            padding: 0 !important;
+            height: auto !important;
+            min-height: 0 !important;
+            padding: 12px !important;
             position: relative !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
             border: 1px solid !important;
             border-image-source: linear-gradient(
               135.31deg,
@@ -884,13 +1037,14 @@ export default function PackageSection() {
 
           /* Car image — top right */
           .filmtypes-car {
-            position: absolute !important;
-            top: 0 !important;
-            right: 0 !important;
+            position: relative !important;
+            top: auto !important;
+            right: auto !important;
             left: auto !important;
             bottom: auto !important;
-            width: 58% !important;
-            height: 185px !important;
+            order: 1 !important;
+            width: 100% !important;
+            height: 170px !important;
             border: none !important;
             border-image-source: none !important;
             z-index: 2 !important;
@@ -910,14 +1064,15 @@ export default function PackageSection() {
 
           /* Features info — top left */
           .filmtypes-info {
-            position: absolute !important;
-            top: 14px !important;
-            left: 14px !important;
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            order: 2 !important;
             z-index: 3 !important;
             display: flex !important;
             flex-direction: column;
             gap: 0;
-            width: 38% !important;
+            width: 100% !important;
             padding: 0;
             opacity: 1 !important;
           }
@@ -926,12 +1081,6 @@ export default function PackageSection() {
             display: grid !important;
             grid-template-columns: 1fr !important;
             gap: 8px !important;
-          }
-
-          /* Hide Finish (4th) and Style Options (5th) — keep Coverage, Color Options, Film Quality, Warranty */
-          .filmtypes-info > div > div:nth-child(4),
-          .filmtypes-info > div > div:nth-child(5) {
-            display: none !important;
           }
 
           .filmtypes-info > div > div > div:first-child {
@@ -948,17 +1097,7 @@ export default function PackageSection() {
 
           /* Price — bottom left, clear of book button */
           .filmtypes-footer {
-            position: absolute !important;
-            bottom: 72px !important;
-            left: 14px !important;
-            right: auto !important;
-            display: flex !important;
-            flex-direction: row;
-            gap: 6px;
-            align-items: baseline;
-            width: auto !important;
-            z-index: 3 !important;
-            opacity: 1 !important;
+            display: none !important;
           }
 
           .filmtypes-footer .price {
@@ -981,17 +1120,37 @@ export default function PackageSection() {
 
           /* Book button — full width at bottom of card */
           .filmtypes-bookbtn {
-            position: absolute !important;
-            bottom: 12px !important;
-            left: 12px !important;
-            right: 12px !important;
+            position: relative !important;
+            order: 3 !important;
+            bottom: auto !important;
+            left: auto !important;
+            right: auto !important;
             top: auto !important;
-            width: calc(100% - 24px) !important;
+            width: 100% !important;
             max-width: none !important;
             height: 48px !important;
             padding: 3px !important;
             border-radius: 45px !important;
             opacity: 1 !important;
+          }
+
+          .filmtypes-mobile-arrows {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            order: 4;
+            margin-top: 2px;
+          }
+
+          .filmtypes-mobile-arrows button {
+            width: 40px;
+            height: 40px;
+            border-radius: 9999px;
+            border: 1px solid #3f3f46;
+            color: #d4dee5;
+            background: rgba(10, 10, 12, 0.85);
+            font-size: 20px;
+            line-height: 1;
           }
 
           .filmtypes-bookbtn span {
@@ -1030,6 +1189,52 @@ export default function PackageSection() {
           .filmtypes-glow-eclipse1,
           .filmtypes-glow-eclipse2 {
             display: none !important;
+          }
+
+          .wrapping-contact-banner {
+            grid-template-columns: 1fr;
+            grid-template-areas:
+              "left"
+              "right"
+              "cta";
+            gap: 20px;
+            padding: 20px 14px;
+          }
+
+          .wrapping-contact-banner__left {
+            align-items: center;
+            gap: 16px;
+          }
+
+          .wrapping-contact-banner__title {
+            text-align: center;
+            font-size: 36px;
+            line-height: 1.16;
+          }
+
+          .wrapping-contact-banner__cta-link {
+            width: fit-content;
+            justify-content: center;
+            justify-self: center;
+          }
+
+          :global(.wrapping-contact-banner__cta-btn) {
+            transform: scale(0.48);
+            transform-origin: center;
+          }
+
+          .wrapping-contact-banner__right {
+            grid-template-columns: repeat(2, minmax(120px, 1fr));
+            gap: 12px;
+          }
+
+          .wrapping-contact-banner__logo-card {
+            min-height: 66px;
+            padding: 6px;
+          }
+
+          .wrapping-contact-banner__logo-image {
+            max-height: 52px;
           }
         }
       `}</style>

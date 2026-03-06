@@ -85,11 +85,23 @@ const packages = [
   },
 ];
 
+const packageImageByName = {
+  "Basic Package": "/coating/package/basic-package.jpg",
+  "Enhanced Package": "/coating/package/enhanced-package.png",
+  "Premium Package": "/coating/package/premium-package.png",
+  "Elite Package": "/coating/package/elite-package.png",
+  "Supreme Package": "/coating/package/supreme-package.png",
+  "Ultimate Package": "/coating/package/ultimate-package.png",
+};
+
 import Image from "next/image";
 
 export default function CoatingPackageSection() {
   const [activeFilm, setActiveFilm] = useState("Basic Package");
   const selected = packages.find((f) => f.name === activeFilm) || packages[0];
+  const selectedPackageImage =
+    packageImageByName[selected.name] || "/coating/package/basic-package.jpg";
+  const activeIndex = packages.findIndex((p) => p.name === activeFilm);
 
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
@@ -114,6 +126,18 @@ export default function CoatingPackageSection() {
     setShowBookingModal(false);
     setShowCheckoutModal(false);
     setBookingData(null);
+  };
+
+  const handlePrevPackage = () => {
+    const nextIndex =
+      activeIndex <= 0 ? packages.length - 1 : Math.max(0, activeIndex - 1);
+    setActiveFilm(packages[nextIndex].name);
+  };
+
+  const handleNextPackage = () => {
+    const nextIndex =
+      activeIndex >= packages.length - 1 ? 0 : Math.min(packages.length - 1, activeIndex + 1);
+    setActiveFilm(packages[nextIndex].name);
   };
 
   return (
@@ -605,19 +629,17 @@ export default function CoatingPackageSection() {
                 top: "26px",
                 right: "0px",
                 zIndex: 2,
-                width: "430px",
-                height: "278px",
-                border: "1px solid",
-                borderImageSource:
-                  "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                borderImageSlice: 1,
+                width: "600px",
+                height: "400px",
+                
                 opacity: 1,
               }}
             >
               <Image
-                src="/coating/package-badge.png"
+                src={selectedPackageImage}
                 alt={`${selected.name} package car`}
-                fill
+                width={1000}
+                height={1000}
                 className="object-cover"
               />
             </div>
@@ -760,6 +782,15 @@ export default function CoatingPackageSection() {
                 </span>
               </div>
             </button>
+
+            <div className="coating-mobile-arrows" aria-label="Package navigation">
+              <button type="button" onClick={handlePrevPackage} aria-label="Previous package">
+                ←
+              </button>
+              <button type="button" onClick={handleNextPackage} aria-label="Next package">
+                →
+              </button>
+            </div>
           </div>
         </div>
         <div
@@ -808,6 +839,24 @@ export default function CoatingPackageSection() {
           -webkit-overflow-scrolling: touch;
         }
 
+        .coating-info > div {
+          grid-template-columns: 1fr !important;
+          gap: 12px !important;
+        }
+
+        .coating-info > div > div:nth-child(4),
+        .coating-info > div > div:nth-child(5),
+        .coating-info > div > div:nth-child(6) {
+          display: none;
+        }
+
+        /* desktop should not be affected by .coating-car; mobile-only rules live in the
+           @media (max-width: 640px) block */
+
+        .coating-mobile-arrows {
+          display: none;
+        }
+
         @media (max-width: 640px) {
           section {
             height: auto !important;
@@ -853,9 +902,13 @@ export default function CoatingPackageSection() {
           /* Preview card */
           .coating-preview {
             width: 100% !important;
-            height: 310px !important;
-            padding: 0 !important;
+            height: auto !important;
+            min-height: 0 !important;
+            padding: 12px !important;
             position: relative !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
             border: 1px solid !important;
             border-image-source: linear-gradient(
               135.31deg,
@@ -874,13 +927,14 @@ export default function CoatingPackageSection() {
 
           /* Car image — top right */
           .coating-car {
-            position: absolute !important;
-            top: 0 !important;
-            right: 0 !important;
+            position: relative !important;
+            top: auto !important;
+            right: auto !important;
             left: auto !important;
             bottom: auto !important;
-            width: 58% !important;
-            height: 185px !important;
+            order: 1 !important;
+            width: 100% !important;
+            height: 170px !important;
             border: none !important;
             border-image-source: none !important;
             z-index: 2 !important;
@@ -906,14 +960,15 @@ export default function CoatingPackageSection() {
 
           /* Features info — top left */
           .coating-info {
-            position: absolute !important;
-            top: 14px !important;
-            left: 14px !important;
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            order: 2 !important;
             z-index: 3 !important;
             display: flex !important;
             flex-direction: column;
             gap: 0;
-            width: 38% !important;
+            width: 100% !important;
             padding: 0;
             opacity: 1 !important;
           }
@@ -922,14 +977,6 @@ export default function CoatingPackageSection() {
             display: grid !important;
             grid-template-columns: 1fr !important;
             gap: 8px !important;
-          }
-
-          /* Hide Micron Thickness (4th), Body Coating (5th), Light Coating (6th)
-             Keep: Surface Hardness, Particle Size, Free Maintenance, Warranty */
-          .coating-info > div > div:nth-child(4),
-          .coating-info > div > div:nth-child(5),
-          .coating-info > div > div:nth-child(6) {
-            display: none !important;
           }
 
           .coating-info > div > div > div:first-child {
@@ -946,17 +993,7 @@ export default function CoatingPackageSection() {
 
           /* Price — bottom left, clear of book button */
           .coating-footer {
-            position: absolute !important;
-            bottom: 72px !important;
-            left: 14px !important;
-            right: auto !important;
-            display: flex !important;
-            flex-direction: row;
-            gap: 6px;
-            align-items: baseline;
-            width: auto !important;
-            z-index: 3 !important;
-            opacity: 1 !important;
+            display: none !important;
           }
 
           .coating-footer .price {
@@ -978,17 +1015,37 @@ export default function CoatingPackageSection() {
 
           /* Book button — full width at bottom of card */
           .coating-bookbtn {
-            position: absolute !important;
-            bottom: 12px !important;
-            left: 12px !important;
-            right: 12px !important;
+            position: relative !important;
+            order: 3 !important;
+            bottom: auto !important;
+            left: auto !important;
+            right: auto !important;
             top: auto !important;
-            width: calc(100% - 24px) !important;
+            width: 100% !important;
             max-width: none !important;
             height: 48px !important;
             padding: 3px !important;
             border-radius: 45px !important;
             opacity: 1 !important;
+          }
+
+          .coating-mobile-arrows {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            order: 4;
+            margin-top: 2px;
+          }
+
+          .coating-mobile-arrows button {
+            width: 40px;
+            height: 40px;
+            border-radius: 9999px;
+            border: 1px solid #3f3f46;
+            color: #d4dee5;
+            background: rgba(10, 10, 12, 0.85);
+            font-size: 20px;
+            line-height: 1;
           }
 
           .coating-bookbtn span {

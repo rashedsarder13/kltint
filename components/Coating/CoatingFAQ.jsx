@@ -179,7 +179,7 @@ export default function CoatingFAQ() {
                       }}
                     >
                       <span
-                        className="text-[20px] font-semibold font-montserrat max-w-[90%] leading-[32px]"
+                        className="text-[20px] font-semibold font-montserrat max-w-[90%] leading-[32px] faq-question-text"
                         style={{ color: "#ffffff" }}
                       >
                         {faq.question}
@@ -215,6 +215,15 @@ export default function CoatingFAQ() {
       </section>
 
       <style jsx>{`
+        .faq-question-text {
+          background: linear-gradient(90.29deg, #9e8976 -48.84%, #7a5e50 -9.49%, #c6a488 17.07%, #f6d0ab 33.9%, #9d774e 64.26%, #c99b70 74.48%, #795f52 99.02%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          color: transparent !important;
+          text-shadow: 0 0 16px rgba(198, 164, 136, 0.2);
+        }
+
         @media (max-width: 767px) {
           .faq-inner {
             grid-template-columns: 1fr !important;
@@ -273,7 +282,7 @@ export default function CoatingFAQ() {
             font-size: 18px !important;
             line-height: 22px !important;
             color: #d4dee5 !important;
-            padding-left: 17px !important;
+            padding-left: 0 !important;
             padding-right: 0 !important;
           }
 

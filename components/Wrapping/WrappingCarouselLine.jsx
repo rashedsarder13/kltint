@@ -1,8 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Button from "../shared/Button";
+
+const wrappingDesktopImages = [
+  "/wrapping/slide1.png",
+  "/wrapping/slide2.png",
+  "/wrapping/slide3.png",
+  "/wrapping/slide4.png",
+];
 
 const slides = [
   {
@@ -124,8 +132,15 @@ const slides = [
 ];
 
 export default function WrappingCarouselLine() {
-  // No carousel behaviour – render slides sequentially
+  const [activeBenefitBySlide, setActiveBenefitBySlide] = useState({});
   const router = useRouter();
+
+  const handleBenefitClick = (slideId, benefitIndex) => {
+    setActiveBenefitBySlide((prev) => ({
+      ...prev,
+      [slideId]: benefitIndex,
+    }));
+  };
 
   const handleCTAClick = (slide) => {
     const cta = (slide?.cta || "").toLowerCase();
@@ -162,7 +177,12 @@ export default function WrappingCarouselLine() {
 
   return (
     <>
-      {slides.map((slide, idx) => (
+      {slides.map((slide, idx) => {
+        const activeBenefitIndex = activeBenefitBySlide[slide.id] ?? 0;
+        const activeDesktopImage =
+          wrappingDesktopImages[activeBenefitIndex] || slide.image;
+
+        return (
         <section
           key={slide.id}
           className="relative w-full bg-[#010101] overflow-hidden wrapping-carousel-section pt-16 sm:pt-0"
@@ -183,7 +203,7 @@ export default function WrappingCarouselLine() {
             }}
           >
             <Image
-              src={slide.image}
+              src={activeDesktopImage}
               width={836}
               height={696}
               alt=""
@@ -238,7 +258,7 @@ export default function WrappingCarouselLine() {
 
               {/* Main subtitle */}
               <h1
-                className="text-[52px] lg:text-[60px] font-bold font-oswald uppercase text-transparent bg-clip-text leading-[1.1] tracking-[0.06em] mb-16 whitespace-pre-line "
+                className="text-[52px]  font-bold font-oswald text-transparent bg-clip-text leading-[1.2] tracking-[0.06em] mb-6 whitespace-pre-line"
                 style={{
                   width: "1152px",
                   backgroundImage:
@@ -262,10 +282,22 @@ export default function WrappingCarouselLine() {
 
               {/* Benefits list */}
               <div className="space-y-5 mb-10">
-                {slide.benefits.map((b, i) => (
+                {slide.benefits.map((b, i) => {
+                  const isActive = activeBenefitIndex === i;
+
+                  return (
                   <div key={i} className="flex items-start gap-5">
-                    <div className="relative flex-shrink-0 w-[66px] h-[66px]">
-                      <div className="absolute inset-0 rounded-full border-[2px] border-dashed border-gray-600" />
+                    <button
+                      type="button"
+                      onClick={() => handleBenefitClick(slide.id, i)}
+                      className="relative flex-shrink-0 w-[66px] h-[66px] cursor-pointer focus:outline-none"
+                      aria-label={`Show image for ${b.title}`}
+                    >
+                      <div
+                        className={`absolute inset-0 rounded-full border-[2px] border-dashed ${
+                          isActive ? "border-[#C6A488]" : "border-gray-600"
+                        }`}
+                      />
                       <div className="absolute top-[5.78px] left-[5.78px] w-[54.45px] h-[54.45px] rounded-full bg-[#070205] flex items-center justify-center overflow-hidden">
                         <Image
                           src={b.icon}
@@ -275,20 +307,30 @@ export default function WrappingCarouselLine() {
                           className="w-10 h-10 object-contain"
                         />
                       </div>
-                    </div>
+                    </button>
                     <div className="flex-1 pt-1">
-                      <h4
-                        className="text-[28px] font-medium font-oswald text-transparent bg-clip-text capitalize leading-[40px] mb-1"
-                        style={{
-                          backgroundImage:
-                            "linear-gradient(90.29deg, #9E8976 -48.84%, #7A5E50 -9.49%, #C6A488 17.07%, #F6D0AB 33.9%, #9D774E 64.26%, #C99B70 74.48%, #795F52 99.02%)",
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                          letterSpacing: "0.5%",
-                        }}
+                      <button
+                        type="button"
+                        onClick={() => handleBenefitClick(slide.id, i)}
+                        className="text-left cursor-pointer focus:outline-none"
+                        aria-label={`Show image for ${b.title}`}
                       >
-                        {b.title}
-                      </h4>
+                        <h4
+                          className="text-[28px] font-medium font-oswald text-transparent bg-clip-text capitalize leading-[40px] mb-1"
+                          style={{
+                            backgroundImage:
+                              "linear-gradient(90.29deg, #9E8976 -48.84%, #7A5E50 -9.49%, #C6A488 17.07%, #F6D0AB 33.9%, #9D774E 64.26%, #C99B70 74.48%, #795F52 99.02%)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            letterSpacing: "0.5%",
+                            textShadow: isActive
+                              ? "0 0 18px rgba(198, 164, 136, 0.22)"
+                              : "none",
+                          }}
+                        >
+                          {b.title}
+                        </h4>
+                      </button>
                       <p
                         className="text-[18px] font-medium leading-[28px] max-w-[440px]"
                         style={{
@@ -302,7 +344,8 @@ export default function WrappingCarouselLine() {
                       </p>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* CTA Button */}
@@ -361,7 +404,8 @@ export default function WrappingCarouselLine() {
 
 
         </section>
-      ))}
+        );
+      })}
 
       <style jsx>{`
         @keyframes slideInLeft {

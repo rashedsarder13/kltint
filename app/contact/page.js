@@ -12,8 +12,8 @@ export const metadata = {
 export default function ContactPage() {
   return (
     <>
-      <ContactHero />
-      <NearestArea />
+      {/* <ContactHero /> */}
+      <NearestArea showCallNowButton />
       <ContactDetails />
       <GalleryContact />
       {/* Add more contact components here (contact form, map, etc.) */}

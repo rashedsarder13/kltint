@@ -63,11 +63,10 @@ export default function BlogPost() {
             <button
               key={service.id}
               onClick={() => setActiveService(service.id)}
-              className={`px-8 py-3 rounded-full text-[16px] font-oswald transition-all ${
-                activeService === service.id
+              className={`px-8 py-3 rounded-full text-[16px] font-oswald transition-all ${activeService === service.id
                   ? "bg-gradient-to-r from-[#9E8976] via-[#F6D0AB] to-[#9E8976] text-black font-semibold shadow-lg"
                   : "bg-[#1a1a1a] text-white/60 hover:text-white border border-white/10 hover:border-white/20"
-              }`}
+                }`}
             >
               {service.label}
             </button>
@@ -157,7 +156,15 @@ export default function BlogPost() {
               alt="Package bottom banner"
               width={1268}
               height={178}
-              className="object-cover w-full h-auto banner-img"
+              className="object-cover w-full h-auto hidden sm:block"
+            />
+            {/* Mobile banner */}
+            <Image
+              src="/tint/mobile/small_section.png"
+              alt="Package bottom banner"
+              width={1268}
+              height={178}
+              className="object-cover w-full h-auto block sm:hidden"
             />
           </div>
         </div>
@@ -197,7 +204,7 @@ export default function BlogPost() {
 
           /* enlarge read more button for touch */
           .grid button {
-            transform: scale(2) !important;
+            transform: scale(1.05) !important;
           }
 
           /* ensure image covers properly */

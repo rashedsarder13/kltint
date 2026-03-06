@@ -43,11 +43,6 @@ const WrappingOption = () => {
     setSelectedColor(color);
   };
 
-  const handleReset = () => {
-    setSelectedColor("red");
-    setColorPage(0);
-  };
-
   const nextColorPage = () => {
     setColorPage((prev) => (prev + 1) % totalPages);
   };
@@ -58,6 +53,10 @@ const WrappingOption = () => {
 
   const currentColor = allColors.find((c) => c.value === selectedColor);
   const selectedImageColor = currentColor?.imageColor || "red";
+  const displayColorName = currentColor?.value
+    ? currentColor.value.charAt(0).toUpperCase() + currentColor.value.slice(1)
+    : "Red";
+  const displayColorHex = currentColor?.hex || "#FF3B30";
 
   // Use matte as default effect since effects are removed from UI
   const imagePath = `/wrapping/${selectedImageColor}/${selectedImageColor}_matte.png`;
@@ -112,56 +111,7 @@ const WrappingOption = () => {
             maxHeight: "700px",
           }}
         >
-          {/* Header with PLATINUM and Close Button */}
-          <div className="relative flex items-center justify-center p-4  pb-0">
-            <h3
-              className="font-medium"
-              style={{
-                fontFamily: "Oswald, sans-serif",
-                fontWeight: 500,
-                fontSize: "28px",
-                lineHeight: "40px",
-                letterSpacing: "0.5%",
-                textTransform: "capitalize",
-                height: "40px",
-                background:
-                  "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              PLATINUM
-            </h3>
-            <button
-              onClick={handleReset}
-              className="absolute right-4 md:right-6 top-4 md:top-6 flex items-center justify-center
-                       rounded-full transition-all group hover:scale-110"
-              style={{
-                width: "20px",
-                height: "20px",
-                background:
-                  "linear-gradient(269.91deg, #FFF6D2 0.06%, #D4AF37 99.91%)",
-                opacity: 1,
-              }}
-              aria-label="Reset"
-            >
-              <svg
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                fill="none"
-                className="transition-transform"
-              >
-                <path
-                  d="M1 1L9 9M9 1L1 9"
-                  stroke="#000000"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
-          </div>
+          <div className="relative flex items-center justify-center p-4 pb-0" />
 
           <div className="px-6 md:px-10 pb-4">
             {/* Car Image Area */}
@@ -201,19 +151,53 @@ const WrappingOption = () => {
               </div>
             </div>
 
-            {/* Selected Color Display */}
-            <div className="flex items-center justify-center gap-6 mb-4">
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-6 h-6 rounded-full border-2 border-white/30"
-                  style={{ backgroundColor: currentColor?.hex || "#FF0000" }}
-                />
-                <span
-                  className="text-gray-400 text-sm"
-                  style={{ fontFamily: "Montserrat, sans-serif" }}
+            {/* Static color details above slider */}
+            <div
+              className="mb-4 flex items-center justify-center gap-8"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
+            >
+              <div className="min-w-[160px] flex items-center gap-3">
+                <p
+                  className="text-sm md:text-base whitespace-nowrap"
+                  style={{
+                    background:
+                      "linear-gradient(90.29deg, #9e8976 -48.84%, #7a5e50 -9.49%, #c6a488 17.07%, #f6d0ab 33.9%, #9d774e 64.26%, #c99b70 74.48%, #795f52 99.02%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    color: "transparent",
+                    textShadow: "0 0 16px rgba(198, 164, 136, 0.2)",
+                  }}
                 >
-                  {currentColor?.hex || "#FF0000"}
-                </span>
+                  Color Name:
+                </p>
+                <div className="px-3 py-2 rounded-md border border-white/25 bg-black/20">
+                  <span className="text-base md:text-lg font-semibold text-gray-100">
+                    {displayColorName}
+                  </span>
+                </div>
+              </div>
+
+              <div className="min-w-[180px] flex items-center gap-3">
+                <p
+                  className="text-sm md:text-base whitespace-nowrap"
+                  style={{
+                    background:
+                      "linear-gradient(90.29deg, #9e8976 -48.84%, #7a5e50 -9.49%, #c6a488 17.07%, #f6d0ab 33.9%, #9d774e 64.26%, #c99b70 74.48%, #795f52 99.02%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    color: "transparent",
+                    textShadow: "0 0 16px rgba(198, 164, 136, 0.2)",
+                  }}
+                >
+                  Color Code:
+                </p>
+                <div className="px-3 py-2 rounded-md border border-white/25 bg-black/20">
+                  <span className="text-base md:text-lg font-semibold text-gray-100">
+                    {displayColorHex}
+                  </span>
+                </div>
               </div>
             </div>
 

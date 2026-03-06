@@ -1,117 +1,40 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const windowTypes = [
   {
+    key: "front",
     name: "FRONT",
-    activeVLT: 5,
-    image: "/tint/frontvltcar.svg",
-    eclipse: "/tint/fronteclipse.svg",
-    carWidth: "710px",
-    carHeight: "499px",
-    eclipseWidth: "628px",
-    eclipseHeight: "83px",
-    eclipseBottom: "10px",
   },
   {
-    name: "SIDE",
-    activeVLT: 30,
-    image: "/tint/vlt-car2.png",
-    eclipse: "/tint/sideclipse.svg",
-    carWidth: "892px",
-    carHeight: "649px",
-    eclipseWidth: "800px",
-    eclipseHeight: "100px",
-    eclipseBottom: "130px",
+    key: "front-side",
+    name: "Front-Side",
   },
   {
+    key: "back-side",
+    name: "Back Side",
+  },
+  {
+    key: "rear",
     name: "REAR",
-    activeVLT: 50,
-    image: "/tint/vlt-car3.png",
-    eclipse: "/tint/rareAclipse.svg",
-    carWidth: "934px",
-    carHeight: "587px",
-    eclipseWidth: "782px",
-    eclipseHeight: "163px",
-    eclipseBottom: "90px",
   },
 ];
 
 const vltLevels = [5, 15, 30, 50, 70];
 
-// Get the car image source for a given window type and VLT level
-function getCarSrcFor(windowName, vlt) {
-  if (windowName === "FRONT") {
-    return vlt === 5
-      ? "/tint/frontvltcar.svg"
-      : `/tint/front/${String(vlt).padStart(2, "0")}.png`;
-  }
-  if (windowName === "SIDE") {
-    return vlt === 30
-      ? "/tint/vlt-car2.png"
-      : `/tint/side/${String(vlt).padStart(2, "0")}.png`;
-  }
-  if (windowName === "REAR") {
-    return vlt === 50
-      ? "/tint/vlt-car3.png"
-      : `/tint/rear/${String(vlt).padStart(2, "0")}.png`;
-  }
-  return "/tint/frontvltcar.svg";
+function getTintNewCarSrc(windowKey, vlt) {
+  return `/tint-new/${windowKey}/${vlt}.png`;
 }
 
 export default function VLTLevels() {
-  const [activeWindow, setActiveWindow] = useState("FRONT");
-  const [selectedVLTs, setSelectedVLTs] = useState({
-    FRONT: 5,
-    SIDE: 30,
-    REAR: 50,
+  const [selectedVLTByWindow, setSelectedVLTByWindow] = useState({
+    front: 5,
+    "front-side": 30,
+    "back-side": 50,
+    rear: 30,
   });
-  const [isMobile, setIsMobile] = useState(false);
-  const [mobileVLTs, setMobileVLTs] = useState({
-    FRONT: 5,
-    SIDE: 5,
-    REAR: 5,
-  });
-  const [mobileActiveRow, setMobileActiveRow] = useState("FRONT");
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 640);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const currentWindow = windowTypes.find((w) => w.name === activeWindow);
-
-  const getCarSrc = () => {
-    // FRONT uses user-provided per-percent images stored in public/tint/front
-    if (activeWindow === "FRONT") {
-      const v = selectedVLTs.FRONT ?? 5;
-      return v === 5
-        ? "/tint/frontvltcar.svg"
-        : `/tint/front/${String(v).padStart(2, "0")}.png`;
-    }
-
-    // SIDE: default/active level is 30% (uses `currentWindow.image`); other levels use files in public/tint/side
-    if (activeWindow === "SIDE") {
-      const v = selectedVLTs.SIDE ?? 30;
-      return v === 30
-        ? currentWindow.image
-        : `/tint/side/${String(v).padStart(2, "0")}.png`;
-    }
-
-    // REAR: default is 50% (currentWindow.image); other levels use files in public/tint/rear
-    if (activeWindow === "REAR") {
-      const v = selectedVLTs.REAR ?? 50;
-      return v === 50
-        ? currentWindow.image
-        : `/tint/rear/${String(v).padStart(2, "0")}.png`;
-    }
-
-    return currentWindow.image;
-  };
 
   return (
     <section
@@ -172,16 +95,22 @@ export default function VLTLevels() {
           </h2>
         </div>
 
-        {/* All 3 cars stacked */}
-        <div className="w-full flex flex-col items-center gap-2 mb-4 pt-24">
+        {/* 2x2 car grid on mobile */}
+        <div className="w-full max-w-[380px] mx-auto grid grid-cols-2 gap-3 mb-4 pt-10">
           {windowTypes.map((wt) => (
-            <div key={wt.name} className="w-full flex justify-center">
+            <div
+              key={wt.key}
+              className="w-full flex flex-col items-center justify-end"
+            >
               <img
-                src={getCarSrcFor(wt.name, mobileVLTs[wt.name])}
+                src={getTintNewCarSrc(wt.key, selectedVLTByWindow[wt.key])}
                 alt={`${wt.name} car view`}
-                className={`mobile-car-img ${wt.name !== "FRONT" ? "mobile-car-img-large" : ""}`}
+                className="mobile-car-img"
                 style={{ display: "block", transition: "opacity 0.25s ease" }}
               />
+              <span className="mt-1 text-[12px] font-oswald text-[#A9A9A9]">
+                {wt.name}
+              </span>
             </div>
           ))}
         </div>
@@ -190,49 +119,32 @@ export default function VLTLevels() {
         <div className="w-full max-w-[360px] mx-auto">
           <div className="flex flex-col gap-2">
             {windowTypes.map((wt) => {
-              const isActiveRow = mobileActiveRow === wt.name;
               return (
                 <div key={wt.name} className="flex items-center gap-3">
-                  {/* Window Type Button */}
-                  <button
-                    onClick={() => setMobileActiveRow(wt.name)}
-                    type="button"
+                  <div
                     className="vlt-window-btn-mobile font-oswald tracking-wider flex items-center justify-center shrink-0"
-                    style={
-                      isActiveRow
-                        ? {
-                            background:
-                              "linear-gradient(114.31deg, #151000 -20.74%, #2C2405 55.8%, #634D05 106.02%)",
-                            border: "1px solid transparent",
-                            borderImageSource:
-                              "linear-gradient(135.34deg, #856220 15.43%, #F4E683 34.91%, #BF923D 50.85%, #4E341B 68.56%, #F1EA82 86.26%)",
-                            borderImageSlice: 1,
-                            color: "#FFFFFF",
-                          }
-                        : {
-                            background: "#1A1A1A",
-                            border: "1px solid transparent",
-                            color: "#A9A9A9",
-                          }
-                    }
+                    style={{
+                      background: "#1A1A1A",
+                      border: "1px solid transparent",
+                      color: "#A9A9A9",
+                    }}
                   >
                     {wt.name}
-                  </button>
+                  </div>
 
                   {/* VLT Percentage Options */}
                   <div className="flex-1 flex items-center justify-between">
                     {vltLevels.map((vlt) => {
-                      const isActive = mobileVLTs[wt.name] === vlt;
+                      const isActive = selectedVLTByWindow[wt.key] === vlt;
                       return (
                         <button
                           key={vlt}
-                          onClick={() => {
-                            setMobileActiveRow(wt.name);
-                            setMobileVLTs((prev) => ({
+                          onClick={() =>
+                            setSelectedVLTByWindow((prev) => ({
                               ...prev,
-                              [wt.name]: vlt,
-                            }));
-                          }}
+                              [wt.key]: vlt,
+                            }))
+                          }
                           type="button"
                           aria-pressed={isActive}
                           className={`font-oswald font-semibold transition-colors focus:outline-none ${
@@ -259,75 +171,26 @@ export default function VLTLevels() {
 
       {/* ========== DESKTOP LAYOUT ========== */}
       <div className="relative z-10 max-w-[1440px] mx-auto px-[112px] mt-10 h-full flex flex-col justify-center vlt-desktop-layout">
-        {/* All 3 Car Images shown side by side */}
+        {/* 4 car images in 2x2 */}
         <div
-          className="relative w-full max-w-[1200px] mx-auto vlt-stage flex items-end justify-center gap-4"
-          style={{ minHeight: "450px" }}
+          className="relative w-full max-w-[1200px] mx-auto vlt-stage vlt-car-grid"
+          style={{ minHeight: "420px" }}
         >
           {windowTypes.map((wt) => {
-            const isActive = activeWindow === wt.name;
-            const carSrc = getCarSrcFor(wt.name, selectedVLTs[wt.name] ?? wt.activeVLT);
             return (
               <div
-                key={wt.name}
-                className="relative flex flex-col items-center transition-all duration-500 ease-in-out cursor-pointer"
-                style={{
-                  flex: isActive ? "1.4" : "0.8",
-                  opacity: isActive ? 1 : 0.6,
-                  filter: isActive ? "none" : "brightness(0.7)",
-                  transition: "flex 0.5s ease, opacity 0.5s ease, filter 0.5s ease",
-                }}
-                onClick={() => setActiveWindow(wt.name)}
+                key={wt.key}
+                className="relative flex flex-col items-center justify-end"
               >
-                {/* Eclipse Background */}
-                <div
-                  className="absolute left-1/2 transform -translate-x-1/2 z-0"
+                <img
+                  src={getTintNewCarSrc(wt.key, selectedVLTByWindow[wt.key])}
+                  alt={`${wt.name} car view`}
+                  className="desktop-car-img"
                   style={{
-                    width: "80%",
-                    height: "60px",
-                    bottom: "0px",
-                    opacity: isActive ? 1 : 0.4,
-                    transition: "opacity 0.5s ease",
+                    display: "block",
+                    transition: "opacity 0.3s ease",
                   }}
-                >
-                  <Image
-                    src={wt.eclipse}
-                    alt="Eclipse effect"
-                    width={parseInt(wt.eclipseWidth)}
-                    height={parseInt(wt.eclipseHeight)}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                {/* Car Image with smooth crossfade */}
-                <div
-                  className="relative z-10 w-full"
-                  style={{
-                    height: isActive ? "380px" : "280px",
-                    transition: "height 0.5s ease",
-                  }}
-                >
-                  <img
-                    src={carSrc}
-                    alt={`${wt.name} car view`}
-                    className="w-full h-full object-contain"
-                    style={{
-                      display: "block",
-                      transition: "opacity 0.4s ease-in-out",
-                    }}
-                  />
-                </div>
-                {/* Window type label */}
-                <span
-                  className="mt-2 font-oswald text-center"
-                  style={{
-                    fontSize: isActive ? "18px" : "14px",
-                    color: isActive ? "#D4AF37" : "#666",
-                    fontWeight: 500,
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  {wt.name}
-                </span>
+                />
               </div>
             );
           })}
@@ -338,96 +201,47 @@ export default function VLTLevels() {
           <div className="flex flex-col gap-3">
             {windowTypes.map((window) => (
               <div key={window.name} className="flex items-center gap-6">
-                {/* Window Type Button */}
-                <button
-                  onClick={() => {
-                    setActiveWindow(window.name);
+                <div
+                  className="vlt-window-btn font-oswald tracking-wider transition-all flex items-center"
+                  style={{
+                    background: "#1A1A1A",
+                    width: "159px",
+                    height: "64px",
+                    gap: "10px",
+                    borderRadius: "5px",
+                    paddingTop: "16px",
+                    paddingRight: "24px",
+                    paddingBottom: "16px",
+                    paddingLeft: "24px",
+                    opacity: 1,
+                    justifyContent: "center",
+                    color: "#A9A9A9",
+                    fontFamily: "Oswald, sans-serif",
+                    fontWeight: 500,
+                    fontStyle: "normal",
+                    fontSize: "28px",
+                    lineHeight: "40px",
+                    letterSpacing: "0.5%",
+                    textAlign: "center",
+                    textTransform: "capitalize",
                   }}
-                  onTouchStart={(e) => {
-                    e.stopPropagation();
-                    setActiveWindow(window.name);
-                  }}
-                  type="button"
-                  className={`vlt-window-btn font-oswald tracking-wider transition-all flex items-center ${
-                    activeWindow === window.name ? "" : ""
-                  }`}
-                  style={
-                    activeWindow === window.name
-                      ? {
-                          background:
-                            "linear-gradient(114.31deg, #151000 -20.74%, #2C2405 55.8%, #634D05 106.02%)",
-                          border: "1px solid transparent",
-                          borderImageSource:
-                            "linear-gradient(135.34deg, #856220 15.43%, #F4E683 34.91%, #BF923D 50.85%, #4E341B 68.56%, #F1EA82 86.26%)",
-                          borderImageSlice: 1,
-                          width: "159px",
-                          height: "64px",
-                          gap: "10px",
-                          borderRadius: "5px",
-                          paddingTop: "16px",
-                          paddingRight: "61px",
-                          paddingBottom: "16px",
-                          paddingLeft: "61px",
-                          opacity: 1,
-                          justifyContent: "center",
-                          color: "#FFFFFF",
-                          fontFamily: "Oswald, sans-serif",
-                          fontWeight: 500,
-                          fontStyle: "normal",
-                          fontSize: "28px",
-                          lineHeight: "40px",
-                          letterSpacing: "0.5%",
-                          textAlign: "center",
-                          textTransform: "capitalize",
-                        }
-                      : {
-                          background: "#1A1A1A",
-                          width: "159px",
-                          height: "64px",
-                          gap: "10px",
-                          borderRadius: "5px",
-                          paddingTop: "16px",
-                          paddingRight: "61px",
-                          paddingBottom: "16px",
-                          paddingLeft: "61px",
-                          opacity: 1,
-                          justifyContent: "center",
-                          color: "#A9A9A9",
-                          fontFamily: "Oswald, sans-serif",
-                          fontWeight: 500,
-                          fontStyle: "normal",
-                          fontSize: "28px",
-                          lineHeight: "40px",
-                          letterSpacing: "0.5%",
-                          textAlign: "center",
-                          textTransform: "capitalize",
-                        }
-                  }
                 >
                   {window.name}
-                </button>
+                </div>
 
                 {/* VLT Percentage Options */}
                 <div className="flex-1 flex items-center gap-4 vlt-perc">
                   {vltLevels.map((vlt) => {
-                    const isActive =
-                      (selectedVLTs[window.name] ?? window.activeVLT) === vlt;
+                    const isActive = selectedVLTByWindow[window.key] === vlt;
                     return (
                       <button
                         key={vlt}
-                        onClick={() => {
-                          setSelectedVLTs((prev) => ({
+                        onClick={() =>
+                          setSelectedVLTByWindow((prev) => ({
                             ...prev,
-                            [window.name]: vlt,
-                          }));
-                        }}
-                        onTouchStart={(e) => {
-                          e.stopPropagation();
-                          setSelectedVLTs((prev) => ({
-                            ...prev,
-                            [window.name]: vlt,
-                          }));
-                        }}
+                            [window.key]: vlt,
+                          }))
+                        }
                         type="button"
                         aria-pressed={isActive}
                         className={`flex-1 text-center font-oswald font-semibold text-[24px] transition-colors focus:outline-none ${
@@ -450,10 +264,6 @@ export default function VLTLevels() {
       </div>
 
       <style jsx>{`
-        .vlt-car-container {
-          position: relative;
-        }
-
         .vlt-window-btn {
           border-radius: 5px;
           transition:
@@ -481,6 +291,21 @@ export default function VLTLevels() {
         }
         .vlt-bg-mobile {
           display: none;
+        }
+
+        .vlt-car-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 18px;
+          align-items: end;
+          justify-items: center;
+        }
+
+        .desktop-car-img {
+          width: 100%;
+          max-width: 470px;
+          height: 185px;
+          object-fit: contain;
         }
 
         .vlt-mobile-header {
@@ -511,16 +336,11 @@ export default function VLTLevels() {
 
         /* Mobile car images */
         .mobile-car-img {
-          width: 80%;
-          max-width: 300px;
-          height: 130px;
+          width: 100%;
+          max-width: 180px;
+          height: 95px;
           object-fit: contain;
           will-change: opacity;
-        }
-        .mobile-car-img-large {
-          width: 95%;
-          max-width: 360px;
-          height: 150px;
         }
 
         /* Mobile window type button */
@@ -559,25 +379,17 @@ export default function VLTLevels() {
             height: auto !important;
             min-height: 0 !important;
           }
+          .vlt-mobile-title {
+            font-size: 30px !important;
+            line-height: 40px !important;
+          }
+          .mobile-header-glow {
+            width: 360px;
+          }
         }
 
         /* large mobile / small tablet (641px - 767px) */
         @media (min-width: 641px) and (max-width: 767px) {
-          .vlt-section {
-            padding: 2px !important;
-          }
-          .vlt-frame {
-            max-width: calc(var(--car-mobile-width, 540px) * 1.2) !important;
-          }
-          .vlt-car-container {
-            max-width: min(96vw, 820px) !important;
-            max-height: 480px !important;
-            min-height: 340px !important;
-            height: auto !important;
-          }
-          .vlt-eclipse {
-            display: none !important;
-          }
           .vlt-window-btn {
             width: 100% !important;
             max-width: 360px !important;
@@ -592,26 +404,16 @@ export default function VLTLevels() {
           .vlt-perc button {
             font-size: 18px !important;
           }
-          .vlt-controls {
-            margin-top: -8px !important;
-          }
         }
 
         /* small tablets (768px - 900px) */
         @media (min-width: 768px) and (max-width: 900px) {
-          .vlt-frame {
-            max-width: calc(var(--car-mobile-width, 540px) * 1.4) !important;
+          .vlt-car-grid {
+            gap: 8px;
           }
-          .vlt-eclipse {
-            max-width: calc(
-              var(--eclipse-mobile-width, 300px) * 1.4
-            ) !important;
-          }
-
-          .vlt-car-container {
-            max-width: min(96vw, 820px) !important;
-            max-height: 480px !important;
-            height: auto !important;
+          .desktop-car-img {
+            max-width: 360px;
+            height: 145px;
           }
           .vlt-window-btn {
             width: 140px !important;

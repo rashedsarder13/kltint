@@ -244,13 +244,24 @@ export default function OpenPosition() {
             overflow: "hidden",
           }}
         >
-          <Image
-            src="/tint/tinitSmalllSection.svg"
-            alt="Package bottom banner"
-            width={1268}
-            height={178}
-            className="object-cover w-full h-auto banner-img"
-          />
+          <div className="banner-desktop">
+            <Image
+              src="/tint/tinitSmalllSection.svg"
+              alt="Package bottom banner"
+              width={1268}
+              height={178}
+              className="object-cover w-full h-auto banner-img"
+            />
+          </div>
+          <div className="banner-mobile">
+            <Image
+              src="/tint/mobile/small_section.png"
+              alt="Package bottom banner"
+              width={1268}
+              height={178}
+              className="object-cover w-full h-auto banner-img banner-mobile-img"
+            />
+          </div>
         </div>
       </div>
       {/* Decorative Ellipses */}
@@ -292,6 +303,14 @@ export default function OpenPosition() {
       />
 
       <style jsx>{`
+        .banner-desktop {
+          display: block;
+        }
+
+        .banner-mobile {
+          display: none;
+        }
+
         @media (max-width: 767px) {
           .open-positions-wrapper {
             width: calc(100% - 40px) !important;
@@ -312,9 +331,27 @@ export default function OpenPosition() {
           }
           .small-banner {
             margin-top: 24px !important;
+            width: 100% !important;
+            padding: 0 12px !important;
+          }
+          .small-banner > div {
+            width: 100% !important;
+            max-width: none !important;
           }
           .small-banner img.banner-img {
             height: auto !important;
+          }
+          .banner-desktop {
+            display: none !important;
+          }
+          .banner-mobile {
+            display: block !important;
+            width: 100% !important;
+          }
+          .banner-mobile-img {
+            width: 100% !important;
+            max-width: none !important;
+            display: block !important;
           }
           button img[alt="Apply Now"] {
             width: 320px !important;
