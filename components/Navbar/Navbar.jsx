@@ -51,8 +51,8 @@ const Navbar = () => {
             >
               <Link href="/" className="flex items-center ml-4.5">
                 <Image
-                  src="/KL white.png"
-                  height={37}
+                  src="/logo-white-new-1.png"
+                  height={500}
                   width={162}
                   alt="KL TINT"
                   className="object-contain"

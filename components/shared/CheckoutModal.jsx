@@ -94,7 +94,7 @@ export default function CheckoutModal({
         <div className="flex justify-center mb-6 mt-8">
           <div className="relative w-38 h-12">
             <Image
-              src="/KL white.png"
+              src="/logo-white-new-1.png"
               alt="KL TINT"
               fill
               className="object-contain"

@@ -1,9 +1,23 @@
 "use client";
 
-// no React hooks needed
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "../shared/Button";
 import Image from "next/image";
+
+const tintDesktopImages = [
+  "/tint/slide1.png",
+  "/tint/slide2.png",
+  "/tint/slide3.png",
+  "/tint/slide4.png",
+];
+
+const tintMobileImages = [
+  "/tint/mobile/slide1.png",
+  "/tint/mobile/slide2.png",
+  "/tint/mobile/slide3.png",
+  "/tint/mobile/slide4.png",
+];
 
 const slides = [
   {
@@ -127,11 +141,18 @@ const slides = [
 ];
 
 export default function TintCarouselLine() {
-  // No carousel behaviour – render slides sequentially
-  // CTAs still use same handler logic per slide below
+  const [activeBenefitBySlide, setActiveBenefitBySlide] = useState({});
 
   // CTA handler: route or scroll depending on active slide
   const router = useRouter();
+
+  const handleBenefitClick = (slideId, benefitIndex) => {
+    setActiveBenefitBySlide((prev) => ({
+      ...prev,
+      [slideId]: benefitIndex,
+    }));
+  };
+
   const handleCTAClick = (slide) => {
     const cta = (slide?.cta || "").toLowerCase();
 
@@ -182,7 +203,15 @@ export default function TintCarouselLine() {
 
   return (
     <>
-      {slides.map((slide, idx) => (
+      {slides.map((slide, idx) => {
+        const activeBenefitIndex = activeBenefitBySlide[slide.id] ?? 0;
+        const activeDesktopImage =
+          tintDesktopImages[activeBenefitIndex] || slide.image;
+        const activeMobileImage =
+          tintMobileImages[activeBenefitIndex] ||
+          `/tint/mobile/slide${slide.id}.png`;
+
+        return (
         <section
           key={slide.id}
           className="relative w-full bg-[#010101] overflow-hidden tint-carousel-section pt-16 sm:pt-0"
@@ -213,7 +242,7 @@ export default function TintCarouselLine() {
             }}
           >
             <img
-              src={slide.image}
+              src={activeDesktopImage}
               alt=""
               className="w-full h-full object-cover object-left"
             />
@@ -282,7 +311,7 @@ export default function TintCarouselLine() {
             {/* mobile car image placed below subtitles - OUTSIDE max-w wrapper */}
             <div className="block md:hidden w-full tint-slide-car-mobile">
               <img
-                src={`/tint/mobile/slide${slide.id}.png`}
+                src={activeMobileImage}
                 alt=""
                 className="w-full h-full object-cover"
                 style={{ objectPosition: "center center" }}
@@ -292,10 +321,22 @@ export default function TintCarouselLine() {
             <div className="max-w-[600px] relative z-20">
               {/* Benefits list */}
               <div className="space-y-5 mb-10">
-                {slide.benefits.map((b, i) => (
+                {slide.benefits.map((b, i) => {
+                  const isActive = activeBenefitIndex === i;
+
+                  return (
                   <div key={i} className="flex items-start gap-5">
-                    <div className="relative flex-shrink-0 w-[66px] h-[66px]">
-                      <div className="absolute inset-0 rounded-full border-[2px] border-dashed border-gray-600" />
+                    <button
+                      type="button"
+                      onClick={() => handleBenefitClick(slide.id, i)}
+                      className="relative flex-shrink-0 w-[66px] h-[66px] cursor-pointer focus:outline-none"
+                      aria-label={`Show image for ${b.title}`}
+                    >
+                      <div
+                        className={`absolute inset-0 rounded-full border-[2px] border-dashed ${
+                          isActive ? "border-[#C6A488]" : "border-gray-600"
+                        }`}
+                      />
                       <div className="absolute top-[5.78px] left-[5.78px] w-[54.45px] h-[54.45px] rounded-full bg-[#070205] flex items-center justify-center overflow-hidden">
                         <img
                           src={b.icon}
@@ -303,20 +344,30 @@ export default function TintCarouselLine() {
                           className="w-9 h-9 object-contain"
                         />
                       </div>
-                    </div>
+                    </button>
                     <div className="flex-1 pt-1">
-                      <h4
-                        className="text-[28px] font-medium font-oswald text-transparent bg-clip-text capitalize leading-[40px] mb-1"
-                        style={{
-                          backgroundImage:
-                            "linear-gradient(90.29deg, #9E8976 -48.84%, #7A5E50 -9.49%, #C6A488 17.07%, #F6D0AB 33.9%, #9D774E 64.26%, #C99B70 74.48%, #795F52 99.02%)",
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                          letterSpacing: "0.5%",
-                        }}
+                      <button
+                        type="button"
+                        onClick={() => handleBenefitClick(slide.id, i)}
+                        className="text-left cursor-pointer focus:outline-none"
+                        aria-label={`Show image for ${b.title}`}
                       >
-                        {b.title}
-                      </h4>
+                        <h4
+                          className="text-[28px] font-medium font-oswald text-transparent bg-clip-text capitalize leading-[40px] mb-1"
+                          style={{
+                            backgroundImage:
+                              "linear-gradient(90.29deg, #9E8976 -48.84%, #7A5E50 -9.49%, #C6A488 17.07%, #F6D0AB 33.9%, #9D774E 64.26%, #C99B70 74.48%, #795F52 99.02%)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            letterSpacing: "0.5%",
+                            textShadow: isActive
+                              ? "0 0 18px rgba(198, 164, 136, 0.22)"
+                              : "none",
+                          }}
+                        >
+                          {b.title}
+                        </h4>
+                      </button>
                       <p
                         className="text-[20px] font-medium leading-[28px] max-w-[440px]"
                         style={{
@@ -330,7 +381,8 @@ export default function TintCarouselLine() {
                       </p>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* CTA Button */}
@@ -390,7 +442,8 @@ export default function TintCarouselLine() {
 
           {/* end of mapped slide content */}
         </section>
-      ))}
+        );
+      })}
       <style jsx>{`
         @keyframes slideInLeft {
           from {

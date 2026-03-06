@@ -2,7 +2,36 @@
 import React from "react";
 import Image from "next/image";
 
-const NearestArea = () => {
+const NearestArea = ({ showCallNowButton = false }) => {
+  const branches = [
+    {
+      id: "klcc",
+      name: "KLCC",
+      mapUrl: "https://www.google.com/maps/search/?api=1&query=3.1579,101.7121",
+      previewImage: "/map/kota-damansara.png",
+    },
+    {
+      id: "bangsar",
+      name: "Bangsar",
+      mapUrl: "https://www.google.com/maps/search/?api=1&query=3.1320,101.6775",
+      previewImage: "/map/setia-alam.png",
+    },
+    {
+      id: "petaling-jaya",
+      name: "Mid Valley / Petaling Jaya",
+      mapUrl: "https://www.google.com/maps/search/?api=1&query=3.1167,101.6839",
+      previewImage: "/map/cheras.png",
+    },
+    {
+      id: "shah-alam",
+      name: "Shah Alam",
+      mapUrl: "https://www.google.com/maps/search/?api=1&query=3.0738,101.5183",
+      previewImage: "/map/puchong.png",
+    },
+  ];
+
+  const [selectedBranch, setSelectedBranch] = React.useState(branches[0]);
+
   const handleVisitClick = () => {
     const el = document.querySelector(".container-main");
     if (!el) return;
@@ -11,6 +40,16 @@ const NearestArea = () => {
     const target = Math.max(0, top - offset);
     window.scrollTo({ top: target, behavior: "smooth" });
   };
+
+  const handleMapIconClick = (branch) => {
+    setSelectedBranch(branch);
+  };
+
+  const handleInfoCardClick = () => {
+    if (!selectedBranch?.mapUrl) return;
+    window.open(selectedBranch.mapUrl, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <>
       <style jsx>{`
@@ -35,12 +74,16 @@ const NearestArea = () => {
           transform: scale(1.2);
         }
 
+        .call-now-button {
+          margin-top: -50px !important;
+        }
+
         @media (max-width: 767px) {
           section {
-            min-height: 820px !important;
+            min-height: ${showCallNowButton ? "940px" : "820px"} !important;
           }
           .container-main {
-            min-height: 820px !important;
+            min-height: ${showCallNowButton ? "940px" : "820px"} !important;
           }
           .gradient-bg {
             height: 100% !important;
@@ -71,11 +114,11 @@ const NearestArea = () => {
             pointer-events: none !important;
           }
           .map-container {
-            top: 280px !important;
-            left: 5% !important;
-            width: 90% !important;
-            height: calc(90vw * 570 / 1213) !important;
-            max-height: 190px !important;
+            top: 272px !important;
+            left: -4% !important;
+            width: 108% !important;
+            height: calc(108vw * 570 / 1213) !important;
+            max-height: 220px !important;
           }
           .map-icon-1 {
             top: 315px !important;
@@ -102,18 +145,23 @@ const NearestArea = () => {
             height: 60px !important;
           }
           .info-card {
-            top: 370px !important;
-            left: calc(50% + 80px) !important;
-            width: 60px !important;
+            top: 430px !important;
+            left: 35% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            width: 180px !important;
             height: auto !important;
           }
           .visit-button {
-            top: 510px !important;
+            top: 650px !important;
             left: 48% !important;
             transform: translateX(-50%) !important;
             width: 260px !important;
             height: auto !important;
             margin-bottom: 40px !important;
+          }
+          .call-now-button {
+            margin-top: -50px !important;
           }
           .mobile-subtitle {
             display: block !important;
@@ -138,15 +186,15 @@ const NearestArea = () => {
 
         @media (min-width: 768px) and (max-width: 1199px) {
           section {
-            min-height: 700px !important;
+            min-height: ${showCallNowButton ? "860px" : "700px"} !important;
           }
 
           .container-main {
-            min-height: 700px !important;
+            min-height: ${showCallNowButton ? "860px" : "700px"} !important;
           }
 
           .gradient-bg {
-            height: 700px !important;
+            height: ${showCallNowButton ? "860px" : "700px"} !important;
           }
 
           .map-container {
@@ -190,13 +238,16 @@ const NearestArea = () => {
             width: 280px !important;
             height: auto !important;
           }
+          .call-now-button {
+            margin-top: -20px !important;
+          }
         }
       `}</style>
       <section
         className="relative w-full overflow-hidden"
         style={{
           background: "rgba(1, 1, 1, 1)",
-          minHeight: "1080px",
+          minHeight: showCallNowButton ? "1240px" : "1080px",
           position: "relative",
         }}
       >
@@ -205,7 +256,7 @@ const NearestArea = () => {
           className="relative mx-auto flex flex-col items-center justify-center container-main"
           style={{
             maxWidth: "1440px",
-            minHeight: "1080px",
+            minHeight: showCallNowButton ? "1240px" : "1080px",
             position: "relative",
           }}
         >
@@ -270,7 +321,7 @@ const NearestArea = () => {
                 padding: "0 16px",
               }}
             >
-              Find Your Nearest KL Studio
+              Find Your Nearest Branch
             </h2>
 
             {/* Mobile-only blue ellipse under the title */}
@@ -362,12 +413,11 @@ const NearestArea = () => {
           />
 
           {/* Map Icon 1 - Top Center (KLCC) */}
-          <a
+          <button
+            type="button"
             className="map-icon-1 map-icon-animated"
-            href="https://www.google.com/maps/search/?api=1&query=3.1579,101.7121"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open KLCC on Google Maps"
+            onClick={() => handleMapIconClick(branches[0])}
+            aria-label="Select KLCC"
             style={{
               position: "absolute",
               top: "374px",
@@ -378,6 +428,9 @@ const NearestArea = () => {
               zIndex: 4,
               cursor: "pointer",
               display: "block",
+              background: "transparent",
+              border: "none",
+              padding: 0,
             }}
           >
             <Image
@@ -387,15 +440,14 @@ const NearestArea = () => {
               height={59}
               quality={100}
             />
-          </a>
+          </button>
 
           {/* Map Icon 2 - Left (Bangsar) */}
-          <a
+          <button
+            type="button"
             className="map-icon-2 map-icon-animated"
-            href="https://www.google.com/maps/search/?api=1&query=3.1320,101.6775"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open Bangsar on Google Maps"
+            onClick={() => handleMapIconClick(branches[1])}
+            aria-label="Select Bangsar"
             style={{
               position: "absolute",
               top: "442px",
@@ -406,6 +458,9 @@ const NearestArea = () => {
               zIndex: 4,
               cursor: "pointer",
               display: "block",
+              background: "transparent",
+              border: "none",
+              padding: 0,
             }}
           >
             <Image
@@ -415,15 +470,14 @@ const NearestArea = () => {
               height={59}
               quality={100}
             />
-          </a>
+          </button>
 
           {/* Map Icon 3 - Right (Petaling Jaya) */}
-          <a
+          <button
+            type="button"
             className="map-icon-3 map-icon-animated"
-            href="https://www.google.com/maps/search/?api=1&query=3.1167,101.6839"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open Mid Valley / Petaling Jaya on Google Maps"
+            onClick={() => handleMapIconClick(branches[2])}
+            aria-label="Select Mid Valley / Petaling Jaya"
             style={{
               position: "absolute",
               top: "433px",
@@ -434,6 +488,9 @@ const NearestArea = () => {
               zIndex: 4,
               cursor: "pointer",
               display: "block",
+              background: "transparent",
+              border: "none",
+              padding: 0,
             }}
           >
             <Image
@@ -443,15 +500,14 @@ const NearestArea = () => {
               height={59}
               quality={100}
             />
-          </a>
+          </button>
 
           {/* Map Icon 4 - Bottom (Shah Alam) */}
-          <a
+          <button
+            type="button"
             className="map-icon-4 map-icon-animated"
-            href="https://www.google.com/maps/search/?api=1&query=3.0738,101.5183"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open Shah Alam on Google Maps"
+            onClick={() => handleMapIconClick(branches[3])}
+            aria-label="Select Shah Alam"
             style={{
               position: "absolute",
               top: "621px",
@@ -462,6 +518,9 @@ const NearestArea = () => {
               zIndex: 4,
               cursor: "pointer",
               display: "block",
+              background: "transparent",
+              border: "none",
+              padding: 0,
             }}
           >
             <Image
@@ -471,11 +530,19 @@ const NearestArea = () => {
               height={59}
               quality={100}
             />
-          </a>
+          </button>
 
           {/* Above Map Image - Info Card */}
-          <div
+          <button
+            type="button"
             className="info-card"
+            onClick={handleInfoCardClick}
+            aria-label={
+              selectedBranch
+                ? `Open ${selectedBranch.name} on Google Maps`
+                : "Select a branch icon first"
+            }
+            disabled={!selectedBranch}
             style={{
               position: "absolute",
               top: "496px",
@@ -484,49 +551,102 @@ const NearestArea = () => {
               height: "293px",
               opacity: 1,
               zIndex: 5,
-            }}
-          >
-            <Image
-              src="/home/aboveMap.svg"
-              alt="Location Info"
-              width={242}
-              height={293}
-              quality={100}
-            />
-          </div>
-
-          {/* Visit Nearest Area Button */}
-          <button
-            type="button"
-            onClick={handleVisitClick}
-            className="visit-button"
-            style={{
-              position: "absolute",
-              top: "902px",
-              left: "539px",
-              width: "361px",
-              height: "116px",
-              opacity: 1,
-              cursor: "pointer",
-              zIndex: 4,
               background: "transparent",
               border: "none",
               padding: 0,
+              cursor: selectedBranch ? "pointer" : "default",
             }}
           >
-            <Image
-              src="/contact/book.png"
-              alt="Visit Nearest Area Button"
-              width={361}
-              height={116}
-              quality={100}
+            {selectedBranch ? (
+              <Image
+                src={selectedBranch.previewImage}
+                alt={`${selectedBranch.name} preview`}
+                width={242}
+                height={293}
+                quality={100}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  borderRadius: "12px",
+                  display: "block",
+                }}
+              />
+            ) : (
+              <Image
+                src="/home/aboveMap.svg"
+                alt="Location Info"
+                width={242}
+                height={293}
+                quality={100}
+              />
+            )}
+          </button>
+
+          {/* Visit Nearest Area Button */}
+          <div
+            className="visit-button"
+            style={{
+              position: "absolute",
+              top: showCallNowButton ? "820px" : "902px",
+              left: "539px",
+              width: "361px",
+              opacity: 1,
+              zIndex: 4,
+            }}
+          >
+            <button
+              type="button"
+              onClick={handleVisitClick}
               style={{
                 width: "100%",
-                height: "100%",
+                height: "auto",
+                cursor: "pointer",
+                background: "transparent",
+                border: "none",
+                padding: 0,
                 display: "block",
               }}
-            />
-          </button>
+            >
+              <Image
+                src="/contact/book.png"
+                alt="Visit Nearest Area Button"
+                width={361}
+                height={116}
+                quality={100}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "block",
+                }}
+              />
+            </button>
+
+            {showCallNowButton && (
+              <a
+                href="tel:+60167554178"
+                aria-label="Call +60 16 755 4178"
+                className="call-now-button"
+                style={{
+                  display: "block",
+                  textDecoration: "none",
+                }}
+              >
+                <Image
+                  src="/contact/callnow.png"
+                  alt="Call Now Button"
+                  width={361}
+                  height={138}
+                  quality={100}
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    display: "block",
+                  }}
+                />
+              </a>
+            )}
+          </div>
         </div>
       </section>
     </>

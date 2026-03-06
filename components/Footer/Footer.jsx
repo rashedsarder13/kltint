@@ -114,10 +114,10 @@ export default function Footer() {
           {/* Logo */}
           <div style={{ width: "255px", height: "70px" }}>
             <Image
-              src="/KL white.png"
+              src="/logo-white-new-1.png"
               alt="KL Tint Studio"
-              width={255}
-              height={70}
+              width={1000}
+              height={1000}
               style={{ objectFit: "contain" }}
             />
           </div>
@@ -239,8 +239,8 @@ export default function Footer() {
             top: "-6px",
           }}
         >
-          {/* Get news & Offer */}
           <h3
+            className="newsletter-hidden"
             style={{
               width: "147px",
               height: "31px",
@@ -257,8 +257,8 @@ export default function Footer() {
             Get news & Offer
           </h3>
 
-          {/* Input Container */}
           <div
+            className="newsletter-hidden"
             style={{
               position: "relative",
               width: "448px",
@@ -1431,6 +1431,11 @@ export default function Footer() {
       </div>
 
       <style jsx>{`
+        .newsletter-hidden {
+          visibility: hidden !important;
+          pointer-events: none !important;
+        }
+
         @media (min-width: 768px) and (max-width: 1023px) {
           .footer-container {
             height: auto !important;

@@ -134,7 +134,15 @@ const ContactDetails = () => {
               alt="Package bottom banner"
               width={1268}
               height={178}
-              className="object-cover w-full h-auto banner-img"
+              className="object-cover w-full h-auto hidden sm:block"
+            />
+            {/* Mobile banner */}
+            <Image
+              src="/tint/mobile/small_section.png"
+              alt="Package bottom banner"
+              width={1268}
+              height={178}
+              className="object-cover w-full h-auto block sm:hidden"
             />
           </div>
         </div>
