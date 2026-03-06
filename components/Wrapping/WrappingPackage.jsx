@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import BookingModal from "../shared/BookingModal";
+import Button from "../shared/Button";
 import CheckoutModal from "../shared/CheckoutModal";
 
 const packages = [
@@ -33,6 +34,15 @@ const packageImageByName = {
   "VINYL ENHANCEMENT": "/wrapping/package/vinyl-enhancement.jpg",
   "VINYL MASTERPIECE": "/wrapping/package/vinyl-masterpiece.jpg",
 };
+
+const wrappingPartnerLogos = [
+  "/home/cardPayment/first/3.png",
+  "/home/cardPayment/first/4.png",
+  "/home/cardPayment/first/5.png",
+  "/home/cardPayment/first/6.png",
+  "/home/cardPayment/first/7.png",
+  "/home/cardPayment/first/8.png",
+];
 
 export default function PackageSection() {
   const [activeFilm, setActiveFilm] = useState("VINYL ENHANCEMENT");
@@ -788,7 +798,7 @@ export default function PackageSection() {
               alignItems: "center",
             }}
           >
-            {/* Left: Contact panel (uses existing image) */}
+            {/* Left: Contact panel (custom design, no static banner image) */}
             <div
               style={{
                 width: "95%",
@@ -799,16 +809,38 @@ export default function PackageSection() {
                 background: "transparent",
               }}
             >
-              <Link href="/contact">
-                <Image
-                  src="/wrapping/wrappingshortbanner2.svg"
-                  alt="Contact panel"
-                  width={720}
-                  height={178}
-                  className="object-cover w-full h-auto"
-                  style={{ display: "block", width: "100%", height: "100%" }}
-                />
-              </Link>
+              <div className="wrapping-contact-banner">
+                <div className="wrapping-contact-banner__left">
+                  <h3 className="wrapping-contact-banner__title">
+                    Are You Looking For Wrapping
+                    <br />
+                    With Different Brand?
+                  </h3>
+                </div>
+
+                <div className="wrapping-contact-banner__right" aria-label="Partner banks">
+                  {wrappingPartnerLogos.map((logoSrc, index) => (
+                    <div key={logoSrc} className="wrapping-contact-banner__logo-card">
+                      <Image
+                        src={logoSrc}
+                        alt={`Partner logo ${index + 1}`}
+                        width={146}
+                        height={70}
+                        className="wrapping-contact-banner__logo-image"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <Link href="/contact" className="wrapping-contact-banner__cta-link">
+                  <Button
+                    text="Contact Us"
+                    width={300}
+                    height={62}
+                    className="wrapping-contact-banner__cta-btn"
+                  />
+                </Link>
+              </div>
             </div>
 
             {/* Right: Pay-in-3 banner */}
@@ -866,6 +898,80 @@ export default function PackageSection() {
 
         .filmtypes-mobile-arrows {
           display: none;
+        }
+
+        .wrapping-contact-banner {
+          position: relative;
+          display: grid;
+          grid-template-columns: minmax(300px, 1.15fr) 1.7fr;
+          grid-template-areas:
+            "left right"
+            "cta right";
+          gap: 40px;
+          align-items: center;
+          padding: 28px 36px;
+          background:
+            radial-gradient(circle at 14% 88%, rgba(243, 196, 64, 0.18), rgba(0, 0, 0, 0) 34%),
+            linear-gradient(102deg, #060b12 0%, #0e1218 44%, #1a1b1a 100%);
+        }
+
+        .wrapping-contact-banner__left {
+          grid-area: left;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          align-items: flex-start;
+        }
+
+        .wrapping-contact-banner__title {
+          margin: 0;
+          font-family: "Oswald", sans-serif;
+          font-weight: 700;
+          font-size: clamp(28px, 2.35vw, 42px);
+          line-height: 1.15;
+          letter-spacing: 0.3px;
+          color: #deebf8;
+          text-wrap: balance;
+        }
+
+        .wrapping-contact-banner__cta-link {
+          grid-area: cta;
+          display: inline-flex;
+          width: min(360px, 100%);
+          justify-self: start;
+          text-decoration: none;
+        }
+
+        .wrapping-contact-banner__cta-link:hover {
+          transform: translateY(-1px) scale(1.01);
+          transition: transform 0.22s ease;
+        }
+
+        .wrapping-contact-banner__right {
+          grid-area: right;
+          display: grid;
+          grid-template-columns: repeat(3, minmax(132px, 1fr));
+          gap: 16px;
+          justify-items: stretch;
+        }
+
+        .wrapping-contact-banner__logo-card {
+          background: #2f3336;
+          border-radius: 6px;
+          padding: 8px;
+          min-height: 76px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+        }
+
+        .wrapping-contact-banner__logo-image {
+          width: 100%;
+          height: auto;
+          max-height: 58px;
+          object-fit: contain;
+          border-radius: 2px;
         }
 
         @media (max-width: 640px) {
@@ -1083,6 +1189,52 @@ export default function PackageSection() {
           .filmtypes-glow-eclipse1,
           .filmtypes-glow-eclipse2 {
             display: none !important;
+          }
+
+          .wrapping-contact-banner {
+            grid-template-columns: 1fr;
+            grid-template-areas:
+              "left"
+              "right"
+              "cta";
+            gap: 20px;
+            padding: 20px 14px;
+          }
+
+          .wrapping-contact-banner__left {
+            align-items: center;
+            gap: 16px;
+          }
+
+          .wrapping-contact-banner__title {
+            text-align: center;
+            font-size: 36px;
+            line-height: 1.16;
+          }
+
+          .wrapping-contact-banner__cta-link {
+            width: fit-content;
+            justify-content: center;
+            justify-self: center;
+          }
+
+          :global(.wrapping-contact-banner__cta-btn) {
+            transform: scale(0.48);
+            transform-origin: center;
+          }
+
+          .wrapping-contact-banner__right {
+            grid-template-columns: repeat(2, minmax(120px, 1fr));
+            gap: 12px;
+          }
+
+          .wrapping-contact-banner__logo-card {
+            min-height: 66px;
+            padding: 6px;
+          }
+
+          .wrapping-contact-banner__logo-image {
+            max-height: 52px;
           }
         }
       `}</style>
