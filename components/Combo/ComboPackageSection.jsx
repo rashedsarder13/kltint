@@ -1245,12 +1245,8 @@ export default function ComboPackageSection() {
         }
 
         .ppf-info-dynamic > div {
-          grid-template-columns: 1fr !important;
+          grid-template-columns: 1fr 1fr !important;
           gap: 12px !important;
-        }
-
-        .ppf-info-dynamic > div > div:nth-child(n + 5) {
-          display: none;
         }
 
         /* desktop should not be affected by .ppf-car; mobile-only rules appear in the
@@ -1397,20 +1393,22 @@ export default function ComboPackageSection() {
 
           .ppf-info-dynamic > div {
             display: grid !important;
-            grid-template-columns: 1fr !important;
-            gap: 8px !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 12px 34px !important;
+            justify-items: start !important;
+            align-items: start !important;
           }
 
           .ppf-info-dynamic > div > div > div:first-child {
-            font-size: 10px !important;
-            line-height: 13px !important;
-            margin-bottom: 1px !important;
+            font-size: 18px !important;
+            line-height: 22px !important;
+            margin-bottom: 6px !important;
             color: #a0afbb !important;
           }
 
           .ppf-info-dynamic > div > div > div:last-child {
-            font-size: 11px !important;
-            line-height: 15px !important;
+            font-size: 20px !important;
+            line-height: 28px !important;
           }
 
           /* Price — bottom left, clear of book button */

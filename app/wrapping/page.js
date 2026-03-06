@@ -22,7 +22,7 @@ export default function WrappingPage() {
       {/* <WrappingCarousel /> */}
       <WrappingOption />
       <WrappingPackage />
-      <PayInstallmentsSection />
+      {/* <PayInstallmentsSection /> */}
       <ExploreOptionsSection />
       <WrappingFAQ />
       <ContactSection />

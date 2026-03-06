@@ -975,20 +975,22 @@ export default function CoatingPackageSection() {
 
           .coating-info > div {
             display: grid !important;
-            grid-template-columns: 1fr !important;
-            gap: 8px !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 12px 34px !important;
+            justify-items: start !important;
+            align-items: start !important;
           }
 
           .coating-info > div > div > div:first-child {
-            font-size: 10px !important;
-            line-height: 13px !important;
-            margin-bottom: 1px !important;
+            font-size: 18px !important;
+            line-height: 22px !important;
+            margin-bottom: 6px !important;
             color: #a0afbb !important;
           }
 
           .coating-info > div > div > div:last-child {
-            font-size: 12px !important;
-            line-height: 16px !important;
+            font-size: 20px !important;
+            line-height: 28px !important;
           }
 
           /* Price — bottom left, clear of book button */
