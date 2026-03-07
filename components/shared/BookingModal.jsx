@@ -1,13 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+
+const BRANCHES = [
+  "Kota Damansara",
+  "Maluri Cheras",
+  "Setia Alam",
+  "Puchong",
+];
 
 export default function BookingModal({
   isOpen,
   onClose,
   packageData,
   onContinue,
+  service = "tint",
 }) {
   const [formData, setFormData] = useState({
     location: "",
@@ -20,8 +28,15 @@ export default function BookingModal({
     carModel: "",
     carPlate: "",
   });
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
 
-  if (!isOpen) return null;
+  const minDate = useMemo(() => {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${now.getFullYear()}-${month}-${day}`;
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -30,9 +45,63 @@ export default function BookingModal({
     });
   };
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    if (!formData.location || !formData.date) {
+      setAvailableSlots([]);
+      return;
+    }
+
+    const controller = new AbortController();
+
+    async function loadSlots() {
+      setLoadingSlots(true);
+      setFormData((prev) => ({ ...prev, time: "" }));
+      try {
+        const params = new URLSearchParams({
+          branch: formData.location,
+          date: formData.date,
+          service,
+        });
+        const response = await fetch(`/api/appointments/slots?${params.toString()}`, {
+          signal: controller.signal,
+        });
+        const data = await response.json();
+        setAvailableSlots(data.slots || []);
+      } catch {
+        if (!controller.signal.aborted) {
+          setAvailableSlots([]);
+          toast.error("Unable to load slot availability.");
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoadingSlots(false);
+        }
+      }
+    }
+
+    loadSlots();
+    return () => controller.abort();
+  }, [formData.location, formData.date, service]);
+
   const handleContinue = () => {
+    if (
+      !formData.location ||
+      !formData.date ||
+      !formData.time ||
+      !formData.name ||
+      !formData.email ||
+      !formData.mobile
+    ) {
+      toast.error("Please complete location, date, time and contact details.");
+      return;
+    }
+
     onContinue(formData);
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
@@ -163,11 +232,11 @@ export default function BookingModal({
                   className="w-full bg-[#252525] text-white border border-gray-700 rounded-lg px-4 py-3 appearance-none focus:outline-none focus:border-[#d4af37]"
                 >
                   <option value="">Select The Locations</option>
-                  <option value="Kuala Lumpur">Kuala Lumpur</option>
-                  <option value="Selangor">Selangor</option>
-                  <option value="Penang">Penang</option>
-                  <option value="Johor Bahru">Johor Bahru</option>
-                  <option value="Malacca">Malacca</option>
+                  {BRANCHES.map((branch) => (
+                    <option key={branch} value={branch}>
+                      {branch}
+                    </option>
+                  ))}
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                   <svg
@@ -197,6 +266,7 @@ export default function BookingModal({
                     name="date"
                     value={formData.date}
                     onChange={handleChange}
+                    min={minDate}
                     className="w-full bg-[#252525] text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-[#d4af37]"
                   />
                 </div>
@@ -208,16 +278,21 @@ export default function BookingModal({
                     name="time"
                     value={formData.time}
                     onChange={handleChange}
+                    disabled={!formData.location || !formData.date || loadingSlots}
                     className="w-full bg-[#252525] text-white border border-gray-700 rounded-lg px-4 py-3 appearance-none focus:outline-none focus:border-[#d4af37]"
                   >
-                    <option value="">09:00-10:00 AM</option>
-                    <option value="10:00-11:00">10:00-11:00 AM</option>
-                    <option value="11:00-12:00">11:00-12:00 PM</option>
-                    <option value="12:00-13:00">12:00-01:00 PM</option>
-                    <option value="14:00-15:00">02:00-03:00 PM</option>
-                    <option value="15:00-16:00">03:00-04:00 PM</option>
-                    <option value="16:00-17:00">04:00-05:00 PM</option>
-                    <option value="17:00-18:00">05:00-06:00 PM</option>
+                    <option value="">
+                      {loadingSlots ? "Loading slots..." : "Select available time"}
+                    </option>
+                    {availableSlots.map((slot) => (
+                      <option
+                        key={slot.id}
+                        value={slot.label}
+                        disabled={!slot.available}
+                      >
+                        {slot.label} {!slot.available ? "(Booked)" : ""}
+                      </option>
+                    ))}
                   </select>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                     <svg
@@ -235,6 +310,9 @@ export default function BookingModal({
                     </svg>
                   </div>
                 </div>
+                <p className="mt-2 text-xs text-gray-500">
+                  Slot availability is managed by selected branch and date.
+                </p>
               </div>
             </div>
 

@@ -1000,6 +1000,7 @@ export default function PPFPackageSection() {
       <BookingModal
         isOpen={showBookingModal}
         onClose={handleCloseAll}
+        service="ppf"
         packageData={{
           name: selected.name,
           area: selected.area,
@@ -1016,6 +1017,7 @@ export default function PPFPackageSection() {
         isOpen={showCheckoutModal}
         onClose={handleCloseAll}
         onBack={handleBack}
+        service="ppf"
         packageData={{
           name: selected.name,
           price: selected.price,

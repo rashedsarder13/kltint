@@ -50,10 +50,10 @@ export default function Footer() {
   ];
 
   const locations = [
-    { label: "Cheras Branch", href: "/contact" },
+    { label: "Maluri Cheras", href: "/contact" },
     { label: "Kota Damansara", href: "/contact" },
-    { label: "Setia Alam Branch", href: "/contact" },
-    { label: "Puchong Branch", href: "/contact" },
+    { label: "Setia Alam", href: "/contact" },
+    { label: "Puchong", href: "/contact" },
   ];
 
   const quickLinks = [

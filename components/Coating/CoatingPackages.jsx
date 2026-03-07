@@ -1156,6 +1156,7 @@ export default function CoatingPackages() {
       <BookingModal
         isOpen={showBookingModal}
         onClose={handleCloseAll}
+        service="coating"
         packageData={{
           name: bookingData?.name,
           warranty: bookingData?.warranty,
@@ -1173,6 +1174,7 @@ export default function CoatingPackages() {
         isOpen={showCheckoutModal}
         onClose={handleCloseAll}
         onBack={handleBack}
+        service="coating"
         packageData={{
           name: bookingData?.name,
           price: bookingData?.price,
