@@ -5,26 +5,26 @@ import Image from "next/image";
 const NearestArea = ({ showCallNowButton = false }) => {
   const branches = [
     {
-      id: "klcc",
-      name: "KLCC",
+      id: "kota-damansara",
+      name: "Kota Damansara",
       mapUrl: "https://www.google.com/maps/search/?api=1&query=3.1579,101.7121",
       previewImage: "/map/kota-damansara.png",
     },
     {
-      id: "bangsar",
-      name: "Bangsar",
+      id: "setia-alam",
+      name: "Setia Alam",
       mapUrl: "https://www.google.com/maps/search/?api=1&query=3.1320,101.6775",
       previewImage: "/map/setia-alam.png",
     },
     {
-      id: "petaling-jaya",
-      name: "Mid Valley / Petaling Jaya",
+      id: "maluri-cheras",
+      name: "Maluri Cheras",
       mapUrl: "https://www.google.com/maps/search/?api=1&query=3.1167,101.6839",
       previewImage: "/map/cheras.png",
     },
     {
-      id: "shah-alam",
-      name: "Shah Alam",
+      id: "puchong",
+      name: "Puchong",
       mapUrl: "https://www.google.com/maps/search/?api=1&query=3.0738,101.5183",
       previewImage: "/map/puchong.png",
     },
@@ -412,12 +412,12 @@ const NearestArea = ({ showCallNowButton = false }) => {
             }}
           />
 
-          {/* Map Icon 1 - Top Center (KLCC) */}
+          {/* Map Icon 1 - Top Center (Kota Damansara) */}
           <button
             type="button"
             className="map-icon-1 map-icon-animated"
             onClick={() => handleMapIconClick(branches[0])}
-            aria-label="Select KLCC"
+            aria-label="Select Kota Damansara"
             style={{
               position: "absolute",
               top: "374px",
@@ -435,19 +435,19 @@ const NearestArea = ({ showCallNowButton = false }) => {
           >
             <Image
               src="/home/mapicon.svg"
-              alt="KLCC map icon"
+              alt="Kota Damansara map icon"
               width={59}
               height={59}
               quality={100}
             />
           </button>
 
-          {/* Map Icon 2 - Left (Bangsar) */}
+          {/* Map Icon 2 - Left (Setia Alam) */}
           <button
             type="button"
             className="map-icon-2 map-icon-animated"
             onClick={() => handleMapIconClick(branches[1])}
-            aria-label="Select Bangsar"
+            aria-label="Select Setia Alam"
             style={{
               position: "absolute",
               top: "442px",
@@ -465,19 +465,19 @@ const NearestArea = ({ showCallNowButton = false }) => {
           >
             <Image
               src="/home/mapicon.svg"
-              alt="Bangsar map icon"
+              alt="Setia Alam map icon"
               width={59}
               height={59}
               quality={100}
             />
           </button>
 
-          {/* Map Icon 3 - Right (Petaling Jaya) */}
+          {/* Map Icon 3 - Right (Maluri Cheras) */}
           <button
             type="button"
             className="map-icon-3 map-icon-animated"
             onClick={() => handleMapIconClick(branches[2])}
-            aria-label="Select Mid Valley / Petaling Jaya"
+            aria-label="Select Maluri Cheras"
             style={{
               position: "absolute",
               top: "433px",
@@ -495,19 +495,19 @@ const NearestArea = ({ showCallNowButton = false }) => {
           >
             <Image
               src="/home/mapicon.svg"
-              alt="Petaling Jaya map icon"
+              alt="Maluri Cheras map icon"
               width={59}
               height={59}
               quality={100}
             />
           </button>
 
-          {/* Map Icon 4 - Bottom (Shah Alam) */}
+          {/* Map Icon 4 - Bottom (Puchong) */}
           <button
             type="button"
             className="map-icon-4 map-icon-animated"
             onClick={() => handleMapIconClick(branches[3])}
-            aria-label="Select Shah Alam"
+            aria-label="Select Puchong"
             style={{
               position: "absolute",
               top: "621px",
@@ -525,7 +525,7 @@ const NearestArea = ({ showCallNowButton = false }) => {
           >
             <Image
               src="/home/mapicon.svg"
-              alt="Shah Alam map icon"
+              alt="Puchong map icon"
               width={59}
               height={59}
               quality={100}

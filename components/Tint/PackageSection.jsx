@@ -1242,6 +1242,7 @@ export default function PackageSection() {
       <BookingModal
         isOpen={showBookingModal}
         onClose={handleCloseAll}
+        service="tint"
         packageData={{
           name: selected.name,
           warranty: selected.warranty,
@@ -1259,6 +1260,7 @@ export default function PackageSection() {
         isOpen={showCheckoutModal}
         onClose={handleCloseAll}
         onBack={handleBack}
+        service="tint"
         packageData={{
           name: selected.name,
           price: selected.price,

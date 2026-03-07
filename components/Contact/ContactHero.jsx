@@ -269,13 +269,13 @@ const ContactHero = () => {
             }}
           />
 
-          {/* Map Icon 1 - Top Center (KLCC) */}
+          {/* Map Icon 1 - Top Center (Kota Damansara) */}
           <a
             className="map-icon-1 map-icon-animated"
             href="https://www.google.com/maps/search/?api=1&query=3.1579,101.7121"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Open KLCC on Google Maps"
+            aria-label="Open Kota Damansara on Google Maps"
             style={{
               position: "absolute",
               top: "374px",
@@ -290,20 +290,20 @@ const ContactHero = () => {
           >
             <Image
               src="/home/mapicon.svg"
-              alt="KLCC map icon"
+              alt="Kota Damansara map icon"
               width={59}
               height={59}
               quality={100}
             />
           </a>
 
-          {/* Map Icon 2 - Left (Bangsar) */}
+          {/* Map Icon 2 - Left (Setia Alam) */}
           <a
             className="map-icon-2 map-icon-animated"
             href="https://www.google.com/maps/search/?api=1&query=3.1320,101.6775"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Open Bangsar on Google Maps"
+            aria-label="Open Setia Alam on Google Maps"
             style={{
               position: "absolute",
               top: "442px",
@@ -318,20 +318,20 @@ const ContactHero = () => {
           >
             <Image
               src="/home/mapicon.svg"
-              alt="Bangsar map icon"
+              alt="Setia Alam map icon"
               width={59}
               height={59}
               quality={100}
             />
           </a>
 
-          {/* Map Icon 3 - Right (Petaling Jaya) */}
+          {/* Map Icon 3 - Right (Maluri Cheras) */}
           <a
             className="map-icon-3 map-icon-animated"
             href="https://www.google.com/maps/search/?api=1&query=3.1167,101.6839"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Open Petaling Jaya on Google Maps"
+            aria-label="Open Maluri Cheras on Google Maps"
             style={{
               position: "absolute",
               top: "433px",
@@ -346,20 +346,20 @@ const ContactHero = () => {
           >
             <Image
               src="/home/mapicon.svg"
-              alt="Petaling Jaya map icon"
+              alt="Maluri Cheras map icon"
               width={59}
               height={59}
               quality={100}
             />
           </a>
 
-          {/* Map Icon 4 - Bottom (Shah Alam) */}
+          {/* Map Icon 4 - Bottom (Puchong) */}
           <a
             className="map-icon-4 map-icon-animated"
             href="https://www.google.com/maps/search/?api=1&query=3.0738,101.5183"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Open Shah Alam on Google Maps"
+            aria-label="Open Puchong on Google Maps"
             style={{
               position: "absolute",
               top: "621px",
@@ -374,7 +374,7 @@ const ContactHero = () => {
           >
             <Image
               src="/home/mapicon.svg"
-              alt="Shah Alam map icon"
+              alt="Puchong map icon"
               width={59}
               height={59}
               quality={100}

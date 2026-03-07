@@ -798,6 +798,7 @@ export default function PPFOptions() {
       <BookingModal
         isOpen={showBookingModal}
         onClose={handleCloseAll}
+        service="ppf"
         packageData={{
           name: selectedPackage?.name,
           area: selectedPackage?.area,
@@ -814,6 +815,7 @@ export default function PPFOptions() {
         isOpen={showCheckoutModal}
         onClose={handleCloseAll}
         onBack={handleBack}
+        service="ppf"
         packageData={{
           name: selectedPackage?.name,
           price: selectedPackage?.price,

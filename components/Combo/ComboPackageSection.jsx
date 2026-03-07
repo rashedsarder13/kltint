@@ -1504,6 +1504,7 @@ export default function ComboPackageSection() {
       <BookingModal
         isOpen={showBookingModal}
         onClose={handleCloseAll}
+        service="combo"
         packageData={{
           name: selected.name,
           warranty: selected.warranty,
@@ -1530,6 +1531,7 @@ export default function ComboPackageSection() {
         isOpen={showCheckoutModal}
         onClose={handleCloseAll}
         onBack={handleBack}
+        service="combo"
         packageData={{
           name: selected.name,
           price: selected.price,
