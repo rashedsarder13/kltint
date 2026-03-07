@@ -10,41 +10,99 @@ export default function CheckoutModal({
   onBack,
   packageData,
   bookingData,
+  service = "tint",
 }) {
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [promoError, setPromoError] = useState("");
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const packagePrice = parseFloat(packageData.price);
+  const packagePrice = parseFloat(packageData?.price || "0");
   const subtotal = packagePrice;
-  const total = subtotal - discount;
+  const total = Math.max(subtotal - discount, 0);
 
-  const handleApplyPromo = () => {
-    // Simple promo code logic - you can customize this
-    if (promoCode.toUpperCase() === "APPLY") {
-      setDiscount(0);
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) {
+      setPromoError("Enter a promo code first.");
+      return;
     }
-    // Add more promo codes as needed
-  };
 
-  const handleConfirm = async () => {
+    setPromoLoading(true);
+    setPromoError("");
+
     try {
-      await fetch("/api/notify", {
+      const response = await fetch("/api/promo/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type: "booking",
-          package: packageData.name,
-          price: packageData.price,
-          ...(bookingData || {}),
+          code: promoCode,
+          orderAmount: subtotal,
         }),
       });
+      const data = await response.json();
+
+      if (data.valid) {
+        setDiscount(Number(data.discount || 0));
+        toast.success(`Promo applied. RM ${Number(data.discount || 0).toFixed(2)} off.`);
+      } else {
+        setDiscount(0);
+        setPromoError(data.error || "Invalid promo code.");
+      }
     } catch {
-      // Silently fail — still confirm booking
+      setDiscount(0);
+      setPromoError("Failed to validate promo code.");
+    } finally {
+      setPromoLoading(false);
     }
-    toast.success("Booking Confirmed! We will contact you soon.");
-    onClose();
+  };
+
+  const handleConfirm = async () => {
+    setConfirmLoading(true);
+
+    try {
+      const response = await fetch("/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          branch: bookingData?.location,
+          service,
+          packageName: packageData?.name,
+          price: packagePrice,
+          date: bookingData?.date,
+          timeSlot: bookingData?.time,
+          customerName: bookingData?.name,
+          customerEmail: bookingData?.email,
+          customerPhone: bookingData?.mobile,
+          carModel: bookingData?.carModel,
+          carPlate: bookingData?.carPlate,
+          message: bookingData?.message,
+          promoCode: promoCode.trim().toUpperCase(),
+          discount,
+          totalPaid: total,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 409) {
+          toast.error(data.error || "Slot already taken. Please choose another time.");
+          onBack();
+          return;
+        }
+        toast.error(data.error || "Booking failed. Please try again.");
+        return;
+      }
+
+      toast.success("Booking confirmed. Customer and admin emails have been sent.");
+      onClose();
+    } catch {
+      toast.error("Booking failed due to network error.");
+    } finally {
+      setConfirmLoading(false);
+    }
   };
 
   return (
@@ -185,13 +243,22 @@ export default function CheckoutModal({
               type="text"
               value={promoCode}
               onChange={(e) => setPromoCode(e.target.value)}
-              placeholder="Add promotion code APPLY"
+              placeholder="Add promotion code"
               className="flex-1 bg-[#252525] text-white border-none rounded px-3 py-2 text-sm placeholder-gray-500 focus:outline-none"
             />
+            <button
+              type="button"
+              onClick={handleApplyPromo}
+              disabled={promoLoading}
+              className="rounded bg-[#2e2e35] px-3 py-2 text-xs font-semibold text-white disabled:opacity-60"
+            >
+              {promoLoading ? "Applying" : "Apply"}
+            </button>
             <span className="text-white font-semibold min-w-[80px] text-right py-2">
               RM {discount.toFixed(2)}
             </span>
           </div>
+          {promoError && <p className="text-xs text-red-400">{promoError}</p>}
         </div>
 
         {/* Total */}
@@ -205,6 +272,7 @@ export default function CheckoutModal({
         {/* Confirm Button */}
         <button
           onClick={handleConfirm}
+          disabled={confirmLoading}
           className="w-full relative group overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-[#d4af37] to-[#f5d0ab] transform transition-transform group-hover:scale-105" />
@@ -215,7 +283,7 @@ export default function CheckoutModal({
             <div className="w-8 h-0.5 bg-black/30 transform rotate-45 origin-left" />
           </div>
           <span className="relative block text-black font-bold text-lg py-4 tracking-wide">
-            Confirm Now
+            {confirmLoading ? "Confirming..." : "Confirm Now"}
           </span>
         </button>
       </div>

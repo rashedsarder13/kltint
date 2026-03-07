@@ -1059,6 +1059,7 @@ export default function TintOptions() {
       <BookingModal
         isOpen={showBookingModal}
         onClose={handleCloseAll}
+        service="tint"
         packageData={{
           name: selectedPackage?.name,
           warranty: selectedPackage?.warranty,
@@ -1076,6 +1077,7 @@ export default function TintOptions() {
         isOpen={showCheckoutModal}
         onClose={handleCloseAll}
         onBack={handleBack}
+        service="tint"
         packageData={{
           name: selectedPackage?.name,
           price: selectedPackage?.price,

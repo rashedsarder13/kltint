@@ -881,6 +881,7 @@ export default function ExploreOptionsSection() {
       <BookingModal
         isOpen={showBookingModal}
         onClose={handleCloseAll}
+        service="wrapping"
         packageData={{
           name: selectedPackage?.name,
           film: selectedPackage?.filmType,
@@ -898,6 +899,7 @@ export default function ExploreOptionsSection() {
         isOpen={showCheckoutModal}
         onClose={handleCloseAll}
         onBack={handleBack}
+        service="wrapping"
         packageData={{
           name: selectedPackage?.name,
           price: selectedPackage?.price,

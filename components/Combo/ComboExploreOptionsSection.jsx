@@ -824,6 +824,7 @@ export default function ComboExploreOptionsSection() {
       <BookingModal
         isOpen={showBookingModal}
         onClose={handleCloseAll}
+        service="combo"
         packageData={{
           name: selectedPackage?.name,
           film: selectedPackage?.filmType,
@@ -842,6 +843,7 @@ export default function ComboExploreOptionsSection() {
         isOpen={showCheckoutModal}
         onClose={handleCloseAll}
         onBack={handleBack}
+        service="combo"
         packageData={{
           name: selectedPackage?.name,
           price: selectedPackage?.price,

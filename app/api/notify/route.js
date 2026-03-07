@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import twilio from "twilio";
 
-// const resend = new Resend(process.env.RESEND_API_KEY);
-const resend = new Resend("re_1234567890abcdef"); // Placeholder to prevent errors if env var is missing
+const resend = new Resend(process.env.RESEND_API_KEY || "");
 
 const twilioClient = twilio(
   process.env.TWILIO_ACCOUNT_SID,
@@ -43,17 +42,45 @@ export async function POST(request) {
     const body = await request.json();
     const { type, ...data } = body;
 
-    // Basic server-side validation
-    if (!type || !data.name || !data.email) {
+    // Type-specific server-side validation
+    if (!type) {
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
         { status: 400 }
       );
     }
 
+    if (type === "subscribe" && !data.email) {
+      return NextResponse.json(
+        { success: false, error: "Email is required" },
+        { status: 400 }
+      );
+    }
+
+    if (type === "booking" && (!data.name || !data.email || !data.mobile)) {
+      return NextResponse.json(
+        { success: false, error: "Name, email and mobile are required" },
+        { status: 400 }
+      );
+    }
+
+    if (type === "contact" && (!data.name || !data.email || !data.mobile)) {
+      return NextResponse.json(
+        { success: false, error: "Name, email and mobile are required" },
+        { status: 400 }
+      );
+    }
+
+    if (type === "career" && (!data.name || !data.email)) {
+      return NextResponse.json(
+        { success: false, error: "Name and email are required" },
+        { status: 400 }
+      );
+    }
+
     const { subject, text } = buildMessages(type, data);
 
-    const hasResend = process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.includes("your_");
+    const hasResend = Boolean(process.env.RESEND_API_KEY);
 
     // For subscribe: send confirmation to subscriber + notify admin via email only (no SMS/WhatsApp)
     if (type === "subscribe") {
