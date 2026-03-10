@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import BookingModal from "../shared/BookingModal";
 import CheckoutModal from "../shared/CheckoutModal";
@@ -118,6 +118,8 @@ export default function PackageSection() {
   const selected = packages.find((f) => f.name === activeFilm) || packages[0];
   const selectedPackageImage =
     packageImageByName[selected.name] || "/tint/package/tint-silver-package.jpg";
+  const mobilePackageImage = "/tint/package/tint-silver-mobile.jpeg";
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [bookingData, setBookingData] = useState(null);
@@ -157,6 +159,20 @@ export default function PackageSection() {
     setShowCheckoutModal(false);
     setBookingData(null);
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 640px)");
+    const handleViewportChange = (e) => setIsMobileViewport(e.matches);
+
+    setIsMobileViewport(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleViewportChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleViewportChange);
+    };
+  }, []);
 
   // Programmatic scroll to the Tint options section (uses same idea as TintCarousel)
   const router = useRouter();
@@ -200,6 +216,7 @@ export default function PackageSection() {
       <div className="relative z-10 max-w-[1440px] mx-auto px-2 md:px-[112px]">
         {/* Title */}
         <div
+          className="tint-packages-title-wrap"
           style={{
             position: "relative",
             width: "100%",
@@ -717,11 +734,12 @@ export default function PackageSection() {
               }}
             >
               <Image
-                src={selectedPackageImage}
-                alt={`${selected.name} package car`}
+                src={isMobileViewport ? mobilePackageImage : selectedPackageImage}
+                alt={`${selected.name} package`}
                 width={1000}
                 height={1000}
-                className="object-cover"
+                className="filmtypes-car-image"
+                sizes="(max-width: 640px) 100vw, 600px"
               />
             </div>
 
@@ -977,68 +995,58 @@ export default function PackageSection() {
         }
 
         @media (max-width: 640px) {
+          /* ── Section fills 90% of mobile screen ── */
           section {
+            min-height: 90dvh !important;
             height: auto !important;
-            min-height: auto !important;
-            padding-top: 60px !important;
-            padding-bottom: 60px !important;
+            padding-top: 18px !important;
+            padding-bottom: 16px !important;
+            display: flex !important;
+            flex-direction: column !important;
+          }
+
+          /* Main content wrapper grows to fill section */
+          section > div:last-child {
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            min-height: 0 !important;
+          }
+
+          .tint-packages-title-wrap {
+            height: auto !important;
+            margin-bottom: 12px !important;
+            flex-shrink: 0 !important;
           }
 
           .tint-packages-title {
-            font-size: 32px !important;
-            line-height: 40px !important;
+            font-size: 28px !important;
+            line-height: 34px !important;
             margin-bottom: 0 !important;
           }
 
+          /* filmtypes-layout grows to fill remaining space under title */
           .filmtypes-layout {
-            flex-direction: column;
-            gap: 20px;
-            align-items: stretch;
-            padding: 0;
-          }
-
-          /* 2-column grid of package buttons */
-          .filmtypes-film-list {
-            width: 100% !important;
-            height: auto !important;
-            flex-direction: row !important;
-            flex-wrap: wrap !important;
-            display: flex !important;
-            overflow-x: visible !important;
-            gap: 10px !important;
+            flex: 1 !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            align-items: stretch !important;
             padding: 0 !important;
+            min-height: 0 !important;
           }
 
-          .filmtypes-film-button {
-            min-width: calc(50% - 5px) !important;
-            width: calc(50% - 5px) !important;
-            flex: 0 0 calc(50% - 5px) !important;
-            justify-content: space-between !important;
-            padding: 10px 14px !important;
-            height: 52px !important;
-          }
-
-          .filmtypes-film-name {
-            text-align: left !important;
-            font-size: 14px !important;
-            line-height: 20px !important;
-          }
-
-          /* Show the arrow only on mobile */
-          .filmtypes-active-arrow {
-            display: inline !important;
-          }
-
-          /* Preview card */
+          /* Package card grows to fill layout (tabs take their own natural height) */
           .filmtypes-preview {
+            order: 1 !important;
+            flex: 1 !important;
+            min-height: 0 !important;
             width: 100% !important;
             height: auto !important;
-            min-height: 0 !important;
-            padding: 12px !important;
+            padding: 10px !important;
             position: relative !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 10px !important;
+            gap: 8px !important;
             border: 1px solid !important;
             border-image-source: linear-gradient(
               135.31deg,
@@ -1055,7 +1063,7 @@ export default function PackageSection() {
             border-radius: 0 !important;
           }
 
-          /* Car image — top right */
+          /* Image fills all remaining space inside the card */
           .filmtypes-car {
             position: relative !important;
             top: auto !important;
@@ -1063,8 +1071,10 @@ export default function PackageSection() {
             left: auto !important;
             bottom: auto !important;
             order: 1 !important;
+            flex: 1 !important;
+            min-height: 120px !important;
+            height: auto !important;
             width: 100% !important;
-            height: 170px !important;
             border: none !important;
             border-image-source: none !important;
             z-index: 2 !important;
@@ -1074,126 +1084,80 @@ export default function PackageSection() {
             background: transparent !important;
           }
 
-          .filmtypes-car img {
+          .filmtypes-car-image {
+            width: 100% !important;
+            height: 100% !important;
             object-fit: contain !important;
+            object-position: center center !important;
+            display: block !important;
           }
 
-          /* Features info — top left */
+          /* Specs — fixed height below image */
           .filmtypes-info {
             position: relative !important;
             top: auto !important;
             left: auto !important;
             order: 2 !important;
+            flex: 0 0 auto !important;
             z-index: 3 !important;
             display: flex !important;
-            flex-direction: column;
-            gap: 0;
+            flex-direction: column !important;
+            gap: 0 !important;
             width: 100% !important;
-            padding: 0;
+            padding: 0 !important;
             opacity: 1 !important;
           }
 
           .filmtypes-info > div {
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
-            gap: 12px 34px !important;
+            gap: 8px 24px !important;
             justify-items: start !important;
             align-items: start !important;
           }
 
-          .filmtypes-info > div > div:nth-child(1) {
-            grid-column: 1;
-            grid-row: 1;
-          }
-
-          .filmtypes-info > div > div:nth-child(2) {
-            grid-column: 2;
-            grid-row: 1;
-          }
-
-          .filmtypes-info > div > div:nth-child(3) {
-            grid-column: 1;
-            grid-row: 2;
-          }
-
-          .filmtypes-info > div > div:nth-child(6) {
-            grid-column: 2;
-            grid-row: 2;
-          }
+          .filmtypes-info > div > div:nth-child(1) { grid-column: 1; grid-row: 1; }
+          .filmtypes-info > div > div:nth-child(2) { grid-column: 2; grid-row: 1; }
+          .filmtypes-info > div > div:nth-child(3) { grid-column: 1; grid-row: 2; }
+          .filmtypes-info > div > div:nth-child(6) { grid-column: 2; grid-row: 2; }
 
           .filmtypes-info .spec-line {
-            font-size: 19px !important;
-            line-height: 26px !important;
+            font-size: 14px !important;
+            line-height: 20px !important;
             color: #a0afbb !important;
             text-align: left !important;
           }
 
           .filmtypes-info .spec-value {
-            font-size: 21px !important;
-            line-height: 28px !important;
+            font-size: 16px !important;
+            line-height: 22px !important;
           }
 
-          /* Price — bottom left, clear of book button */
+          /* Price hidden on mobile */
           .filmtypes-footer {
             display: none !important;
           }
 
-          .filmtypes-footer .price {
-            display: flex;
-            gap: 6px;
-            align-items: baseline;
-            opacity: 1 !important;
-            margin-bottom: 0 !important;
-            margin-right: 0 !important;
-          }
-
-          .filmtypes-footer .price span {
-            font-size: 20px !important;
-            line-height: 26px !important;
-            opacity: 1 !important;
-            font-weight: 700 !important;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
-            filter: none !important;
-          }
-
-          /* Book button — full width at bottom of card */
+          /* Book button — fixed height, full width at bottom of card */
           .filmtypes-bookbtn {
             position: relative !important;
             order: 3 !important;
+            flex: 0 0 auto !important;
             bottom: auto !important;
             left: auto !important;
             right: auto !important;
             top: auto !important;
             width: 100% !important;
             max-width: none !important;
-            height: 48px !important;
+            height: 46px !important;
             padding: 3px !important;
             border-radius: 45px !important;
             opacity: 1 !important;
           }
 
-          .filmtypes-mobile-arrows {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            order: 4;
-            margin-top: 2px;
-          }
-
-          .filmtypes-mobile-arrows button {
-            width: 40px;
-            height: 40px;
-            border-radius: 9999px;
-            border: 1px solid #3f3f46;
-            color: #d4dee5;
-            background: rgba(10, 10, 12, 0.85);
-            font-size: 20px;
-            line-height: 1;
-          }
-
           .filmtypes-bookbtn span {
-            font-size: 15px !important;
-            line-height: 22px !important;
+            font-size: 14px !important;
+            line-height: 20px !important;
             opacity: 1 !important;
             background: linear-gradient(
               135.31deg,
@@ -1209,6 +1173,49 @@ export default function PackageSection() {
             background-clip: text !important;
           }
 
+          /* ── Tab bar: 2 rows × 4 cols, all 7 packages visible ── */
+          .filmtypes-film-list {
+            order: 2 !important;
+            flex: 0 0 auto !important;
+            width: 100% !important;
+            height: auto !important;
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+            overflow: visible !important;
+            gap: 6px !important;
+            padding: 0 !important;
+          }
+
+          .filmtypes-film-button {
+            flex: 0 0 calc(25% - 5px) !important;
+            width: calc(25% - 5px) !important;
+            min-width: 0 !important;
+            height: 38px !important;
+            padding: 6px 6px !important;
+            justify-content: center !important;
+            overflow: hidden !important;
+          }
+
+          .filmtypes-film-name {
+            font-size: 13px !important;
+            line-height: 18px !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            width: 100% !important;
+          }
+
+          .filmtypes-active-arrow {
+            display: none !important;
+          }
+
+          .filmtypes-mobile-arrows {
+            display: none !important;
+          }
+
+          /* Hide decorative elements */
           .filmtypes-preview .package-bg {
             display: none !important;
           }
