@@ -14,7 +14,7 @@ export const metadata = {
 
 export default function CoatingPage() {
   return (
-    <main className="bg-[#010101] min-h-screen">
+    <main className="bg-[#010101] min-h-screen overflow-x-hidden">
       <CoatingHero />
       <CoatingCarouselLine />
       {/* <CoatingCarousel /> */}
