@@ -118,7 +118,7 @@ export default function PackageSection() {
   const selected = packages.find((f) => f.name === activeFilm) || packages[0];
   const selectedPackageImage =
     packageImageByName[selected.name] || "/tint/package/tint-silver-package.jpg";
-  const mobilePackageImage = "/tint/package/tint-silver-mobile.jpeg";
+  const mobilePackageImage = "/tint/package/silver-tint-mobile-new.jpeg";
   const [isMobileViewport, setIsMobileViewport] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
@@ -1029,7 +1029,7 @@ export default function PackageSection() {
           .filmtypes-layout {
             flex: 1 !important;
             flex-direction: column !important;
-            gap: 8px !important;
+            gap: 14px !important;
             align-items: stretch !important;
             padding: 0 !important;
             min-height: 0 !important;
@@ -1046,7 +1046,7 @@ export default function PackageSection() {
             position: relative !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 8px !important;
+            gap: 14px !important;
             border: 1px solid !important;
             border-image-source: linear-gradient(
               135.31deg,
@@ -1103,8 +1103,9 @@ export default function PackageSection() {
             display: flex !important;
             flex-direction: column !important;
             gap: 0 !important;
+            margin-bottom: 6px !important;
             width: 100% !important;
-            padding: 0 !important;
+            padding: 0 0 0 6px !important;
             opacity: 1 !important;
           }
 
@@ -1150,6 +1151,7 @@ export default function PackageSection() {
             width: 100% !important;
             max-width: none !important;
             height: 46px !important;
+            margin-top: 8px !important;
             padding: 3px !important;
             border-radius: 45px !important;
             opacity: 1 !important;
@@ -1188,8 +1190,8 @@ export default function PackageSection() {
           }
 
           .filmtypes-film-button {
-            flex: 0 0 calc(25% - 5px) !important;
-            width: calc(25% - 5px) !important;
+            flex: 0 0 calc((100% - 12px) / 3) !important;
+            width: calc((100% - 12px) / 3) !important;
             min-width: 0 !important;
             height: 38px !important;
             padding: 6px 6px !important;
@@ -1212,7 +1214,25 @@ export default function PackageSection() {
           }
 
           .filmtypes-mobile-arrows {
-            display: none !important;
+            display: flex !important;
+            justify-content: center !important;
+            gap: 14px !important;
+            order: 4 !important;
+            margin-top: 2px !important;
+          }
+
+          .filmtypes-mobile-arrows button {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 9999px !important;
+            border: 1px solid #3f3f46 !important;
+            color: #d4dee5 !important;
+            background: rgba(10, 10, 12, 0.85) !important;
+            font-size: 20px !important;
+            line-height: 1 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
           }
 
           /* Hide decorative elements */

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BookingModal from "../shared/BookingModal";
 import CheckoutModal from "../shared/CheckoutModal";
 
@@ -101,6 +101,8 @@ export default function CoatingPackageSection() {
   const selected = packages.find((f) => f.name === activeFilm) || packages[0];
   const selectedPackageImage =
     packageImageByName[selected.name] || "/coating/package/basic-package.jpg";
+  const mobilePackageImage = "/tint/package/silver-tint-mobile-new-2.jpeg";
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
   const activeIndex = packages.findIndex((p) => p.name === activeFilm);
 
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -139,6 +141,20 @@ export default function CoatingPackageSection() {
       activeIndex >= packages.length - 1 ? 0 : Math.min(packages.length - 1, activeIndex + 1);
     setActiveFilm(packages[nextIndex].name);
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 640px)");
+    const handleViewportChange = (e) => setIsMobileViewport(e.matches);
+
+    setIsMobileViewport(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleViewportChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleViewportChange);
+    };
+  }, []);
 
   return (
     <section
@@ -502,102 +518,6 @@ export default function CoatingPackageSection() {
                       marginBottom: "6px",
                     }}
                   >
-                    Micron Thickness
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "20px",
-                      lineHeight: "28px",
-                      maxWidth: "100%",
-                      overflowWrap: "break-word",
-                      background:
-                        "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                    }}
-                  >
-                    {selected.thickness}
-                  </div>
-                </div>
-
-                <div>
-                  <div
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "18px",
-                      lineHeight: "22px",
-                      color: "#DDE6EE",
-                      marginBottom: "6px",
-                    }}
-                  >
-                    Body Coating
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "20px",
-                      lineHeight: "28px",
-                      maxWidth: "100%",
-                      overflowWrap: "break-word",
-                      background:
-                        "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                    }}
-                  >
-                    {selected.body}
-                  </div>
-                </div>
-
-                <div>
-                  <div
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "18px",
-                      lineHeight: "22px",
-                      color: "#DDE6EE",
-                      marginBottom: "6px",
-                    }}
-                  >
-                    Light Coating
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "20px",
-                      lineHeight: "28px",
-                      maxWidth: "100%",
-                      overflowWrap: "break-word",
-                      background:
-                        "linear-gradient(135.31deg, #9E8976 15.43%, #7A5E50 30.62%, #F6D0AB 47.37%, #9D774E 62.96%, #C99B70 82.05%, #795F52 93.35%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                    }}
-                  >
-                    {selected.light}
-                  </div>
-                </div>
-
-                <div>
-                  <div
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "18px",
-                      lineHeight: "22px",
-                      color: "#DDE6EE",
-                      marginBottom: "6px",
-                    }}
-                  >
                     Warranty
                   </div>
                   <div
@@ -636,11 +556,12 @@ export default function CoatingPackageSection() {
               }}
             >
               <Image
-                src={selectedPackageImage}
+                src={isMobileViewport ? mobilePackageImage : selectedPackageImage}
                 alt={`${selected.name} package car`}
                 width={1000}
                 height={1000}
-                className="object-cover"
+                className="coating-car-image"
+                sizes="(max-width: 640px) 100vw, 600px"
               />
             </div>
 
@@ -844,12 +765,6 @@ export default function CoatingPackageSection() {
           gap: 12px !important;
         }
 
-        .coating-info > div > div:nth-child(4),
-        .coating-info > div > div:nth-child(5),
-        .coating-info > div > div:nth-child(6) {
-          display: none;
-        }
-
         /* desktop should not be affected by .coating-car; mobile-only rules live in the
            @media (max-width: 640px) block */
 
@@ -865,38 +780,61 @@ export default function CoatingPackageSection() {
             padding-bottom: 60px !important;
           }
 
-          .coating-layout {
-            flex-direction: column;
-            gap: 20px;
-            align-items: stretch;
-            padding: 0;
+          .coating-title-wrapper {
+            height: auto !important;
+            margin-bottom: 12px !important;
+            flex-shrink: 0 !important;
           }
 
-          /* 2-column grid of package buttons */
+          .coating-title {
+            font-size: 28px !important;
+            line-height: 34px !important;
+            margin-bottom: 0 !important;
+          }
+
+          .coating-layout {
+            flex-direction: column !important;
+            gap: 14px !important;
+            align-items: stretch !important;
+            padding: 0 !important;
+            min-height: 0 !important;
+          }
+
+          /* Keep tabs under the preview card on mobile */
+          .coating-preview {
+            order: 1 !important;
+          }
+
+          /* 3-column grid of package buttons */
           .coating-package-list {
+            order: 2 !important;
+            flex: 0 0 auto !important;
             width: 100% !important;
             height: auto !important;
             flex-direction: row !important;
             flex-wrap: wrap !important;
             display: flex !important;
-            overflow-x: visible !important;
-            gap: 10px !important;
+            overflow: visible !important;
+            gap: 6px !important;
             padding: 0 !important;
           }
 
           .coating-package-button {
-            min-width: calc(50% - 5px) !important;
-            width: calc(50% - 5px) !important;
-            flex: 0 0 calc(50% - 5px) !important;
-            justify-content: flex-start !important;
-            padding: 10px 14px !important;
-            height: 52px !important;
+            min-width: 0 !important;
+            width: calc((100% - 12px) / 3) !important;
+            flex: 0 0 calc((100% - 12px) / 3) !important;
+            justify-content: center !important;
+            padding: 6px 6px !important;
+            height: 38px !important;
           }
 
           .coating-package-name {
-            text-align: left !important;
-            font-size: 14px !important;
-            line-height: 20px !important;
+            text-align: center !important;
+            font-size: 13px !important;
+            line-height: 18px !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
           }
 
           /* Preview card */
@@ -904,11 +842,12 @@ export default function CoatingPackageSection() {
             width: 100% !important;
             height: auto !important;
             min-height: 0 !important;
+            flex: 1 !important;
             padding: 12px !important;
             position: relative !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 10px !important;
+            gap: 14px !important;
             border: 1px solid !important;
             border-image-source: linear-gradient(
               135.31deg,
@@ -933,8 +872,10 @@ export default function CoatingPackageSection() {
             left: auto !important;
             bottom: auto !important;
             order: 1 !important;
+            flex: 1 !important;
+            min-height: 120px !important;
             width: 100% !important;
-            height: 170px !important;
+            height: auto !important;
             border: none !important;
             border-image-source: none !important;
             z-index: 2 !important;
@@ -944,18 +885,16 @@ export default function CoatingPackageSection() {
             background: transparent !important;
           }
 
-          .coating-car img {
+          .coating-car-image {
+            width: 100% !important;
+            height: 100% !important;
             object-fit: contain !important;
+            object-position: center center !important;
+            display: block !important;
           }
 
           .coating-car::after {
             display: none !important;
-          }
-
-          .coating-title{
-          margin-bottom: -10px !important;
-          font-size: 32px !important;
-          line-height: 40px !important;
           }
 
           /* Features info — top left */
@@ -964,12 +903,14 @@ export default function CoatingPackageSection() {
             top: auto !important;
             left: auto !important;
             order: 2 !important;
+            flex: 0 0 auto !important;
             z-index: 3 !important;
             display: flex !important;
-            flex-direction: column;
-            gap: 0;
+            flex-direction: column !important;
+            gap: 0 !important;
+            margin-bottom: 6px !important;
             width: 100% !important;
-            padding: 0;
+            padding: 0 0 0 6px !important;
             opacity: 1 !important;
           }
 
@@ -981,16 +922,23 @@ export default function CoatingPackageSection() {
             align-items: start !important;
           }
 
+          .coating-info > div > div {
+            display: flex !important;
+            align-items: baseline !important;
+            gap: 6px !important;
+            flex-wrap: wrap !important;
+          }
+
           .coating-info > div > div > div:first-child {
-            font-size: 18px !important;
-            line-height: 22px !important;
-            margin-bottom: 6px !important;
+            font-size: 14px !important;
+            line-height: 20px !important;
+            margin-bottom: 0 !important;
             color: #a0afbb !important;
           }
 
           .coating-info > div > div > div:last-child {
-            font-size: 20px !important;
-            line-height: 28px !important;
+            font-size: 16px !important;
+            line-height: 22px !important;
           }
 
           /* Price — bottom left, clear of book button */
@@ -1019,6 +967,7 @@ export default function CoatingPackageSection() {
           .coating-bookbtn {
             position: relative !important;
             order: 3 !important;
+            flex: 0 0 auto !important;
             bottom: auto !important;
             left: auto !important;
             right: auto !important;
@@ -1026,6 +975,7 @@ export default function CoatingPackageSection() {
             width: 100% !important;
             max-width: none !important;
             height: 48px !important;
+            margin-top: 8px !important;
             padding: 3px !important;
             border-radius: 45px !important;
             opacity: 1 !important;
