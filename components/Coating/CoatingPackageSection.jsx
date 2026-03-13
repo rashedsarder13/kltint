@@ -704,14 +704,14 @@ export default function CoatingPackageSection() {
               </div>
             </button>
 
-            <div className="coating-mobile-arrows" aria-label="Package navigation">
+            {/* <div className="coating-mobile-arrows" aria-label="Package navigation">
               <button type="button" onClick={handlePrevPackage} aria-label="Previous package">
                 ←
               </button>
               <button type="button" onClick={handleNextPackage} aria-label="Next package">
                 →
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
         <div
@@ -930,15 +930,15 @@ export default function CoatingPackageSection() {
           }
 
           .coating-info > div > div > div:first-child {
-            font-size: 14px !important;
-            line-height: 20px !important;
+            font-size: 12px !important;
+            line-height: 18px !important;
             margin-bottom: 0 !important;
             color: #a0afbb !important;
           }
 
           .coating-info > div > div > div:last-child {
-            font-size: 16px !important;
-            line-height: 22px !important;
+            font-size: 14px !important;
+            line-height: 20px !important;
           }
 
           /* Price — bottom left, clear of book button */
@@ -975,7 +975,7 @@ export default function CoatingPackageSection() {
             width: 100% !important;
             max-width: none !important;
             height: 48px !important;
-            margin-top: 8px !important;
+            margin-top: 4px !important;
             padding: 3px !important;
             border-radius: 45px !important;
             opacity: 1 !important;

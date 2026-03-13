@@ -882,14 +882,14 @@ export default function PackageSection() {
               </div>
             </button>
 
-            <div className="filmtypes-mobile-arrows" aria-label="Package navigation">
+            {/* <div className="filmtypes-mobile-arrows" aria-label="Package navigation">
               <button type="button" onClick={handlePrevPackage} aria-label="Previous package">
                 ←
               </button>
               <button type="button" onClick={handleNextPackage} aria-label="Next package">
                 →
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -1123,15 +1123,15 @@ export default function PackageSection() {
           .filmtypes-info > div > div:nth-child(6) { grid-column: 2; grid-row: 2; }
 
           .filmtypes-info .spec-line {
-            font-size: 14px !important;
-            line-height: 20px !important;
+            font-size: 12px !important;
+            line-height: 18px !important;
             color: #a0afbb !important;
             text-align: left !important;
           }
 
           .filmtypes-info .spec-value {
-            font-size: 16px !important;
-            line-height: 22px !important;
+            font-size: 14px !important;
+            line-height: 20px !important;
           }
 
           /* Price hidden on mobile */
@@ -1151,7 +1151,7 @@ export default function PackageSection() {
             width: 100% !important;
             max-width: none !important;
             height: 46px !important;
-            margin-top: 8px !important;
+            margin-top: 4px !important;
             padding: 3px !important;
             border-radius: 45px !important;
             opacity: 1 !important;
