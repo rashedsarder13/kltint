@@ -1565,6 +1565,10 @@ export default function Footer() {
             padding-top: 0px !important;
             z-index: 10 !important;
             background-color: #0a0a0a !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
           }
 
           /* Replace the SVG (designed for 1440px desktop) with a solid dark background */
@@ -1577,6 +1581,9 @@ export default function Footer() {
             width: 100% !important;
             height: fit-content !important;
             padding: 0px 20px 20px 20px !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
           }
 
           .footer-left-section {
@@ -1646,6 +1653,8 @@ export default function Footer() {
             gap: 30px !important;
             margin-bottom: 40px !important;
             align-items: start !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
           }
 
           /* Mobile-only footer terms placed as the second column in the grid */
@@ -1664,6 +1673,7 @@ export default function Footer() {
           .footer-links-section > div {
             width: auto !important;
             height: fit-content !important;
+            min-width: 0 !important;
           }
 
           .footer-bottom {
@@ -1671,6 +1681,9 @@ export default function Footer() {
             width: 100% !important;
             height: fit-content !important;
             padding: 20px 0 !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
           }
 
           .footer-terms {
