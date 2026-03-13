@@ -17,7 +17,7 @@ export const metadata = {
 
 export default function TintPage() {
   return (
-    <main className="min-h-screen bg-[#0A0A0C]">
+    <main className="min-h-screen bg-[#0A0A0C] overflow-x-hidden">
       <TintHero />
       {/* <TintCarousel /> */}
       <TintCarouselLine />

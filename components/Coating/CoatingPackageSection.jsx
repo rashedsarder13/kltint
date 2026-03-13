@@ -778,6 +778,7 @@ export default function CoatingPackageSection() {
             min-height: auto !important;
             padding-top: 60px !important;
             padding-bottom: 60px !important;
+            overflow: hidden !important;
           }
 
           .coating-title-wrapper {
@@ -798,6 +799,9 @@ export default function CoatingPackageSection() {
             align-items: stretch !important;
             padding: 0 !important;
             min-height: 0 !important;
+            overflow: hidden !important;
+            width: 100% !important;
+            max-width: 100% !important;
           }
 
           /* Keep tabs under the preview card on mobile */

@@ -1003,6 +1003,7 @@ export default function PackageSection() {
             padding-bottom: 16px !important;
             display: flex !important;
             flex-direction: column !important;
+            overflow: hidden !important;
           }
 
           /* Main content wrapper grows to fill section */
@@ -1011,6 +1012,9 @@ export default function PackageSection() {
             display: flex !important;
             flex-direction: column !important;
             min-height: 0 !important;
+            overflow: hidden !important;
+            width: 100% !important;
+            max-width: 100% !important;
           }
 
           .tint-packages-title-wrap {
@@ -1033,6 +1037,9 @@ export default function PackageSection() {
             align-items: stretch !important;
             padding: 0 !important;
             min-height: 0 !important;
+            overflow: hidden !important;
+            width: 100% !important;
+            max-width: 100% !important;
           }
 
           /* Package card grows to fill layout (tabs take their own natural height) */
