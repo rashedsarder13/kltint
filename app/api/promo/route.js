@@ -2,6 +2,18 @@ import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/firebase-admin";
 
+function parseMalaysiaDateBoundary(dateStr, boundary) {
+  if (!dateStr) return null;
+  const dateOnly = String(dateStr).trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateOnly)) return null;
+
+  if (boundary === "start") {
+    return new Date(`${dateOnly}T00:00:00+08:00`);
+  }
+
+  return new Date(`${dateOnly}T23:59:59.999+08:00`);
+}
+
 function isAdmin(request) {
   return request.headers.get("x-admin-token") === process.env.ADMIN_PASSWORD;
 }
@@ -51,6 +63,9 @@ export async function POST(request) {
       validUntil,
     } = body;
 
+    const validFromDate = parseMalaysiaDateBoundary(validFrom, "start");
+    const validUntilDate = parseMalaysiaDateBoundary(validUntil, "end");
+
     if (!code || !type || value === undefined || value === "") {
       return NextResponse.json(
         { success: false, error: "code, type and value are required" },
@@ -80,8 +95,8 @@ export async function POST(request) {
       usageLimit: Number(usageLimit) || 0,
       usedCount: 0,
       minOrderAmount: Number(minOrderAmount) || 0,
-      validFrom: validFrom ? Timestamp.fromDate(new Date(validFrom)) : null,
-      validUntil: validUntil ? Timestamp.fromDate(new Date(validUntil)) : null,
+      validFrom: validFromDate ? Timestamp.fromDate(validFromDate) : null,
+      validUntil: validUntilDate ? Timestamp.fromDate(validUntilDate) : null,
       createdAt: FieldValue.serverTimestamp(),
     };
 

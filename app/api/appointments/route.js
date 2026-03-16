@@ -44,6 +44,8 @@ export async function POST(request) {
       totalPaid,
     } = body;
 
+    const normalizedCustomerEmail = String(customerEmail || "").trim().toLowerCase();
+
     if (
       !branch ||
       !service ||
@@ -51,11 +53,18 @@ export async function POST(request) {
       !date ||
       !timeSlot ||
       !customerName ||
-      !customerEmail ||
+      !normalizedCustomerEmail ||
       !customerPhone
     ) {
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    if (!normalizedCustomerEmail.includes("@")) {
+      return NextResponse.json(
+        { success: false, error: "Invalid customer email" },
         { status: 400 }
       );
     }
@@ -137,6 +146,8 @@ export async function POST(request) {
         });
       }
 
+      const finalTotalPaid = Math.max(basePrice - promoDiscount, 0);
+
       const ref = db.collection("appointments").doc();
       const payload = {
         branch,
@@ -148,14 +159,14 @@ export async function POST(request) {
         slotStart: String(timeSlot).split(" - ")[0] ? convertTo24h(String(timeSlot).split(" - ")[0]) : null,
         slotEnd: String(timeSlot).split(" - ")[1] ? convertTo24h(String(timeSlot).split(" - ")[1]) : null,
         customerName,
-        customerEmail,
+        customerEmail: normalizedCustomerEmail,
         customerPhone,
         carModel: carModel || "",
         carPlate: carPlate || "",
         message: message || "",
         promoCode: normalizedPromo,
         discount: promoDiscount,
-        totalPaid: Number(totalPaid) || basePrice - promoDiscount,
+        totalPaid: finalTotalPaid,
         status: "confirmed",
         reminderSent: false,
         createdAt: FieldValue.serverTimestamp(),
@@ -165,12 +176,34 @@ export async function POST(request) {
       return { id: ref.id, ...payload };
     });
 
-    await Promise.allSettled([
+    const [customerEmailResult, adminEmailResult] = await Promise.allSettled([
       sendCustomerEmail(appointmentData),
       sendAdminEmail(appointmentData),
     ]);
 
-    return NextResponse.json({ success: true, appointmentId: appointmentData.id });
+    const emailStatus = {
+      customer:
+        customerEmailResult.status === "fulfilled"
+          ? "sent"
+          : `failed: ${customerEmailResult.reason?.message || "unknown error"}`,
+      admin:
+        adminEmailResult.status === "fulfilled"
+          ? "sent"
+          : `failed: ${adminEmailResult.reason?.message || "unknown error"}`,
+    };
+
+    if (customerEmailResult.status === "rejected") {
+      console.error("[appointments] customer email failed", customerEmailResult.reason);
+    }
+    if (adminEmailResult.status === "rejected") {
+      console.error("[appointments] admin email failed", adminEmailResult.reason);
+    }
+
+    return NextResponse.json({
+      success: true,
+      appointmentId: appointmentData.id,
+      emailStatus,
+    });
   } catch (error) {
     if (error.message === "SLOT_TAKEN") {
       return NextResponse.json(

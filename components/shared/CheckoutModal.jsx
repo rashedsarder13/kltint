@@ -13,6 +13,7 @@ export default function CheckoutModal({
   service = "tint",
 }) {
   const [promoCode, setPromoCode] = useState("");
+  const [appliedPromoCode, setAppliedPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [promoError, setPromoError] = useState("");
   const [promoLoading, setPromoLoading] = useState(false);
@@ -46,13 +47,16 @@ export default function CheckoutModal({
 
       if (data.valid) {
         setDiscount(Number(data.discount || 0));
+        setAppliedPromoCode(String(data.code || "").toUpperCase());
         toast.success(`Promo applied. RM ${Number(data.discount || 0).toFixed(2)} off.`);
       } else {
         setDiscount(0);
+        setAppliedPromoCode("");
         setPromoError(data.error || "Invalid promo code.");
       }
     } catch {
       setDiscount(0);
+      setAppliedPromoCode("");
       setPromoError("Failed to validate promo code.");
     } finally {
       setPromoLoading(false);
@@ -79,7 +83,7 @@ export default function CheckoutModal({
           carModel: bookingData?.carModel,
           carPlate: bookingData?.carPlate,
           message: bookingData?.message,
-          promoCode: promoCode.trim().toUpperCase(),
+          promoCode: appliedPromoCode,
           discount,
           totalPaid: total,
         }),
@@ -96,7 +100,24 @@ export default function CheckoutModal({
         return;
       }
 
-      toast.success("Booking confirmed. Customer and admin emails have been sent.");
+      const customerSent = data?.emailStatus?.customer === "sent";
+      const adminSent = data?.emailStatus?.admin === "sent";
+
+      if (customerSent && adminSent) {
+        toast.success("Booking confirmed. Customer and admin emails sent.");
+      } else if (adminSent && !customerSent) {
+        toast.warning("Booking confirmed. Admin email sent, but customer email failed.");
+      } else if (!adminSent && customerSent) {
+        toast.warning("Booking confirmed. Customer email sent, but admin email failed.");
+      } else {
+        toast.warning("Booking confirmed, but both emails failed to send.");
+      }
+
+      setPromoCode("");
+      setAppliedPromoCode("");
+      setDiscount(0);
+      setPromoError("");
+      window.dispatchEvent(new Event("appointment:submitted"));
       onClose();
     } catch {
       toast.error("Booking failed due to network error.");
@@ -242,7 +263,14 @@ export default function CheckoutModal({
             <input
               type="text"
               value={promoCode}
-              onChange={(e) => setPromoCode(e.target.value)}
+              onChange={(e) => {
+                const nextCode = e.target.value;
+                setPromoCode(nextCode);
+                if (appliedPromoCode && nextCode.trim().toUpperCase() !== appliedPromoCode) {
+                  setAppliedPromoCode("");
+                  setDiscount(0);
+                }
+              }}
               placeholder="Add promotion code"
               className="flex-1 bg-[#252525] text-white border-none rounded px-3 py-2 text-sm placeholder-gray-500 focus:outline-none"
             />
@@ -259,6 +287,14 @@ export default function CheckoutModal({
             </span>
           </div>
           {promoError && <p className="text-xs text-red-400">{promoError}</p>}
+          {appliedPromoCode && discount > 0 && (
+            <div className="rounded-lg border border-[#2f2f36] bg-[#15151a] px-3 py-2 text-xs text-gray-300">
+              <p className="font-semibold text-[#d4af37]">Applied Promo: {appliedPromoCode}</p>
+              <p>
+                RM {subtotal.toFixed(2)} - RM {discount.toFixed(2)} = RM {total.toFixed(2)}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Total */}

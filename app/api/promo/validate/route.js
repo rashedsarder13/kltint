@@ -4,8 +4,9 @@ import { db } from "@/lib/firebase-admin";
 export async function POST(request) {
   try {
     const { code, orderAmount } = await request.json();
+    const normalizedCode = String(code || "").trim().toUpperCase();
 
-    if (!code) {
+    if (!normalizedCode) {
       return NextResponse.json(
         { valid: false, error: "Promo code is required" },
         { status: 400 }
@@ -14,7 +15,7 @@ export async function POST(request) {
 
     const snap = await db
       .collection("promoCodes")
-      .where("code", "==", String(code).toUpperCase())
+      .where("code", "==", normalizedCode)
       .where("active", "==", true)
       .limit(1)
       .get();

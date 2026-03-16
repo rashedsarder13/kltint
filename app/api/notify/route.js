@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import twilio from "twilio";
 
 const resend = new Resend(process.env.RESEND_API_KEY || "");
-
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
 
 function buildMessages(type, data) {
   if (type === "contact") {
@@ -105,56 +99,30 @@ export async function POST(request) {
       return NextResponse.json({ success: true });
     }
 
-    const [emailResult, smsResult, waResult] = await Promise.allSettled([
-      // Email via Resend (optional — never blocks success)
+    const [emailResult] = await Promise.allSettled([
       hasResend
         ? resend.emails.send({
-            from: "KL Tint Studio <onboarding@resend.dev>",
+            from: process.env.RESEND_FROM || "KL Tint Studio <onboarding@resend.dev>",
             to: process.env.ADMIN_EMAIL,
             subject,
             text,
           })
         : Promise.resolve("email_skipped"),
-      // SMS via Twilio
-      twilioClient.messages.create({
-        body: text,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: process.env.ADMIN_PHONE,
-      }),
-
-      // WhatsApp via Twilio
-      twilioClient.messages.create({
-        body: text,
-        from: process.env.TWILIO_WHATSAPP_FROM,
-        to: `whatsapp:${process.env.ADMIN_WHATSAPP}`,
-      }),
+      // Twilio SMS/WhatsApp will be re-enabled later.
+      // twilioClient.messages.create({
+      //   body: text,
+      //   from: process.env.TWILIO_PHONE_NUMBER,
+      //   to: process.env.ADMIN_PHONE,
+      // }),
+      // twilioClient.messages.create({
+      //   body: text,
+      //   from: process.env.TWILIO_WHATSAPP_FROM,
+      //   to: `whatsapp:${process.env.ADMIN_WHATSAPP}`,
+      // }),
     ]);
 
     if (emailResult.status === "rejected") {
       console.error("[notify] Email failed:", emailResult.reason?.message);
-    }
-    if (smsResult.status === "rejected") {
-      console.error("[notify] SMS failed:", smsResult.reason?.message, "| code:", smsResult.reason?.code);
-    }
-    if (waResult.status === "rejected") {
-      console.error("[notify] WhatsApp failed:", waResult.reason?.message, "| code:", waResult.reason?.code);
-    }
-
-    // Only SMS + WhatsApp count — email is optional
-    const allFailed = smsResult.status === "rejected" && waResult.status === "rejected";
-    if (allFailed) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "All notifications failed",
-          details: {
-            email: emailResult.reason?.message,
-            sms: smsResult.reason?.message,
-            whatsapp: waResult.reason?.message,
-          },
-        },
-        { status: 500 }
-      );
     }
 
     return NextResponse.json({ success: true });

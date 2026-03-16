@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const INITIAL_FORM = {
   code: "",
@@ -53,41 +54,77 @@ export default function PromoDashboardPage() {
 
   const onCreate = async (event) => {
     event.preventDefault();
-    await fetch("/api/promo", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-admin-token": token,
-      },
-      body: JSON.stringify(formData),
-    });
-    setFormData(INITIAL_FORM);
-    fetchPromos();
+    try {
+      const response = await fetch("/api/promo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-token": token,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        toast.error(data.error || "Failed to create promo code");
+        return;
+      }
+
+      toast.success("Promo code created successfully");
+      setFormData(INITIAL_FORM);
+      fetchPromos();
+    } catch {
+      toast.error("Failed to create promo code");
+    }
   };
 
   const onToggle = async (id, active) => {
-    await fetch("/api/promo", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "x-admin-token": token,
-      },
-      body: JSON.stringify({ id, active: !active }),
-    });
-    fetchPromos();
+    try {
+      const response = await fetch("/api/promo", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-token": token,
+        },
+        body: JSON.stringify({ id, active: !active }),
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        toast.error(data.error || "Failed to update promo code");
+        return;
+      }
+
+      toast.success(`Promo code ${active ? "disabled" : "enabled"}`);
+      fetchPromos();
+    } catch {
+      toast.error("Failed to update promo code");
+    }
   };
 
   const onDelete = async (id) => {
     if (!confirm("Delete this promo code?")) return;
-    await fetch("/api/promo", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "x-admin-token": token,
-      },
-      body: JSON.stringify({ id }),
-    });
-    fetchPromos();
+    try {
+      const response = await fetch("/api/promo", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-token": token,
+        },
+        body: JSON.stringify({ id }),
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        toast.error(data.error || "Failed to delete promo code");
+        return;
+      }
+
+      toast.success("Promo code deleted");
+      fetchPromos();
+    } catch {
+      toast.error("Failed to delete promo code");
+    }
   };
 
   const onLogout = () => {

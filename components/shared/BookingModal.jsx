@@ -17,7 +17,7 @@ export default function BookingModal({
   onContinue,
   service = "tint",
 }) {
-  const [formData, setFormData] = useState({
+  const initialFormState = {
     location: "",
     date: "",
     time: "",
@@ -27,6 +27,10 @@ export default function BookingModal({
     mobile: "",
     carModel: "",
     carPlate: "",
+  };
+
+  const [formData, setFormData] = useState({
+    ...initialFormState,
   });
   const [availableSlots, setAvailableSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -83,7 +87,20 @@ export default function BookingModal({
 
     loadSlots();
     return () => controller.abort();
-  }, [formData.location, formData.date, service]);
+  }, [isOpen, formData.location, formData.date, service]);
+
+  useEffect(() => {
+    const resetForm = () => {
+      setFormData(initialFormState);
+      setAvailableSlots([]);
+      setLoadingSlots(false);
+    };
+
+    window.addEventListener("appointment:submitted", resetForm);
+    return () => {
+      window.removeEventListener("appointment:submitted", resetForm);
+    };
+  }, []);
 
   const handleContinue = () => {
     if (

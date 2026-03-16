@@ -1,9 +1,7 @@
 import { Geist, Geist_Mono, Oswald } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar/Navbar";
-import Footer from "@/components/Footer/Footer";
-import WhatsAppFloating from "@/components/shared/WhatsAppFloating";
 import { Toaster } from "sonner";
+import SiteChrome from "@/components/layout/SiteChrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,13 +34,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} ${oswald.variable} antialiased overflow-x-hidden`}
         suppressHydrationWarning={true}
       >
-        <Navbar />
-        {children}
-        <Footer />
-        <WhatsAppFloating
-          phone="60167554178"
-          message="Tell me how can I help you?"
-        />
+        <SiteChrome>{children}</SiteChrome>
         <Toaster richColors position="top-right" />
       </body>
     </html>
