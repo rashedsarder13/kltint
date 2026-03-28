@@ -17,7 +17,7 @@
 | Admin authentication | Firebase Auth (email/password) | ✅ Native |
 | Admin dashboard | Next.js `/admin` route + Firestore queries | ✅ Native |
 | Email notifications (customer + admin) | Resend API (already in project) | ✅ Already integrated |
-| Reminder emails (30 min before) | Firebase Cloud Functions (scheduled) OR Vercel Cron Jobs | ✅ Feasible |
+| Reminder emails (30 min before) | Firebase Cloud Functions (scheduled) | ✅ Feasible |
 | Slot availability per branch/date/time | Firestore queries with compound indexes | ✅ Native |
 
 ### Why Firebase (and not alternatives)?
@@ -174,7 +174,7 @@ Create these composite indexes in Firestore Console → Indexes:
 | 2.4 | `app/api/promo/route.js` | CRUD: Admin promo code management |
 | 2.5 | `app/api/admin/login/route.js` | POST: Admin authentication |
 | 2.6 | `app/api/notify/route.js` | UPDATE: Integrate HTML email templates |
-| 2.7 | `app/api/cron/reminders/route.js` | GET: Send reminder emails (Vercel Cron) |
+| 2.7 | `app/api/cron/reminders/route.js` | GET: Send reminder emails (Scheduler via Firebase Cloud Functions) |
 
 ### Phase 3: Frontend Updates
 
@@ -198,7 +198,7 @@ Create these composite indexes in Firestore Console → Indexes:
 | Step | File | Action |
 |------|------|--------|
 | 5.1 | `lib/email-templates.js` | Customer + Admin + Reminder HTML templates |
-| 5.2 | `vercel.json` | Configure cron job for reminders |
+| 5.2 | `deployment scheduler config` | Configure scheduler for reminders (Firebase Functions recommended) |
 
 ---
 
@@ -1086,12 +1086,17 @@ import { sendReminderEmail } from "@/lib/email-templates";
 /**
  * GET /api/cron/reminders
  *
- * Called by Vercel Cron every 10 minutes.
+ * Called by the scheduler (Firebase Cloud Function Pub/Sub or equivalent) every 10 minutes.
+ * For direct HTTP hits, this expects the `Authorization: Bearer ${process.env.CRON_SECRET}` header.
+ *
+ * Note: this route may be intentionally disabled in the codebase when you manage scheduling outside
+ * of this layer (e.g., manual or Firebase scheduler). Enable it for production cron runs.
+ *
  * Finds appointments that are within 30 minutes and haven't been reminded yet.
  * Sends reminder emails and marks them as reminded.
  */
 export async function GET(request) {
-  // Verify cron secret (Vercel sends this automatically)
+  // Verify cron secret headers from scheduler.
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -1155,18 +1160,30 @@ export async function GET(request) {
 }
 ```
 
-### 6.11 — `vercel.json` (Cron Configuration)
+### 6.11 — `deployment cron configuration` (Scheduler Configuration)
 
-```json
-{
-  "crons": [
-    {
-      "path": "/api/cron/reminders",
-      "schedule": "*/10 * * * *"
-    }
-  ]
-}
+- For Firebase (recommended): use Firebase Cloud Functions scheduled trigger to call `/api/cron/reminders` every 10 minutes.
+- For example, in `functions/index.js` (Firebase):
+
+```javascript
+const functions = require('firebase-functions');
+const fetch = require('node-fetch');
+
+exports.reminderCron = functions.pubsub
+  .schedule('every 10 minutes')
+  .timeZone('Asia/Kuala_Lumpur')
+  .onRun(async () => {
+    const url = process.env.APP_URL + '/api/cron/reminders';
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
+    });
+    const body = await res.json();
+    console.log('Reminder cron запущен', body);
+    return null;
+  });
 ```
+
+- If you still want a cloud deployment provider cron JSON, translate to that provider (provider-specific cron configuration is optional, not required for Firebase).
 
 ---
 
@@ -1949,7 +1966,7 @@ export default function PromoDashboardPage() {
 | 11 | `app/admin/page.js` | Admin login page |
 | 12 | `app/admin/dashboard/page.js` | Appointments dashboard |
 | 13 | `app/admin/dashboard/promo/page.js` | Promo code dashboard |
-| 14 | `vercel.json` | Cron configuration |
+| 14 | `deployment scheduler config` | Optional: provider-specific scheduled call settings (Firebase Cloud Functions recommended) |
 
 ## 10. FILES TO MODIFY
 
@@ -1984,7 +2001,7 @@ ADMIN_PASSWORD=
 RESEND_API_KEY=
 ADMIN_EMAIL=
 
-# Cron (required for reminders on Vercel)
+# Cron (required for reminders)
 CRON_SECRET=
 
 # Existing (optional - Twilio)
@@ -2000,10 +2017,10 @@ ADMIN_WHATSAPP=
 
 ## 12. DEPLOYMENT NOTES
 
-### Vercel Cron Jobs
-- Vercel free tier supports cron jobs running once per day minimum
-- **Vercel Pro plan** supports `*/10 * * * *` (every 10 minutes) — required for 30-minute reminders
-- Alternative: Use a free external cron service (cron-job.org) to hit the endpoint every 10 minutes
+### Scheduler (Firebase Recommended)
+- Use Firebase Cloud Functions `pubsub.schedule('every 10 minutes')` (Asia/Kuala_Lumpur timezone) to call `/api/cron/reminders`.
+- Set `CRON_SECRET` in Firebase environment variables / `.env` and pass `Authorization: Bearer ${process.env.CRON_SECRET}`.
+- Or use an external cron service (cron-job.org or similar) to call this endpoint every 10 minutes.
 
 ### Firestore Security Rules (Production)
 Since we use Admin SDK (server-side only), Firestore rules can be locked down:
@@ -2039,7 +2056,7 @@ Execute these steps in exact order:
 9. **Create** `app/api/promo/route.js`
 10. **Create** `app/api/admin/login/route.js`
 11. **Create** `app/api/cron/reminders/route.js`
-12. **Create** `vercel.json`
+12. **Create** scheduler configuration (Firebase Cloud Functions or provider equivalent)
 13. **Modify** `components/shared/BookingModal.jsx` — Replace locations, add dynamic time slot fetching, add `service` prop, add form validation
 14. **Modify** `components/shared/CheckoutModal.jsx` — Add promo code API validation, submit to `/api/appointments`, add `service` prop, handle errors
 15. **Modify** `components/Tint/PackageSection.jsx` — Pass `service="tint"` to BookingModal and CheckoutModal
@@ -2052,7 +2069,7 @@ Execute these steps in exact order:
 22. **Create** `app/admin/page.js`
 23. **Create** `app/admin/dashboard/page.js`
 24. **Create** `app/admin/dashboard/promo/page.js`
-25. **Set environment variables** in Vercel dashboard / `.env.local`
+25. **Set environment variables** in Firebase (or `.env.local` for local dev)
 26. **Create Firestore indexes** in Firebase Console
 27. **Test** full flow: Book → Email → Admin Dashboard → Promo Code
 
