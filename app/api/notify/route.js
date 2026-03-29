@@ -82,14 +82,14 @@ export async function POST(request) {
         await Promise.allSettled([
           // Notify admin
           resend.emails.send({
-            from: "KL Tint Studio <onboarding@resend.dev>",
+            from: process.env.RESEND_FROM || "KL Tint Studio <onboarding@resend.dev>",
             to: process.env.ADMIN_EMAIL,
             subject,
             text,
           }),
           // Confirmation to subscriber
           resend.emails.send({
-            from: "KL Tint Studio <onboarding@resend.dev>",
+            from: process.env.RESEND_FROM || "KL Tint Studio <noreply@kltintstudio.com>",
             to: data.email,
             subject: "You're subscribed to KL Tint Studio!",
             text: `Hi there!\n\nThank you for subscribing to KL Tint Studio news & offers.\n\nWe'll keep you updated with the latest promotions and news.\n\nBest regards,\nKL Tint Studio Team`,
@@ -99,30 +99,36 @@ export async function POST(request) {
       return NextResponse.json({ success: true });
     }
 
-    const [emailResult] = await Promise.allSettled([
-      hasResend
-        ? resend.emails.send({
-            from: process.env.RESEND_FROM || "KL Tint Studio <onboarding@resend.dev>",
-            to: process.env.ADMIN_EMAIL,
-            subject,
-            text,
-          })
-        : Promise.resolve("email_skipped"),
-      // Twilio SMS/WhatsApp will be re-enabled later.
-      // twilioClient.messages.create({
-      //   body: text,
-      //   from: process.env.TWILIO_PHONE_NUMBER,
-      //   to: process.env.ADMIN_PHONE,
-      // }),
-      // twilioClient.messages.create({
-      //   body: text,
-      //   from: process.env.TWILIO_WHATSAPP_FROM,
-      //   to: `whatsapp:${process.env.ADMIN_WHATSAPP}`,
-      // }),
-    ]);
+    // For other types: send admin notification + customer confirmation
+    if (hasResend) {
+      const customerConfirmationTexts = {
+        booking: `Hi ${data.name}!\n\nThank you for booking with KL Tint Studio!\n\nBooking Details:\nPackage: ${data.package}\nPrice: RM ${data.price}\nLocation: ${data.location || "N/A"}\nDate: ${data.date || "N/A"}\nTime: ${data.time || "N/A"}\n\nWe'll contact you soon to confirm your appointment.\n\nBest regards,\nKL Tint Studio Team`,
+        contact: `Hi ${data.name}!\n\nThank you for reaching out to KL Tint Studio!\n\nWe have received your inquiry and will get back to you as soon as possible.\n\nBest regards,\nKL Tint Studio Team`,
+        career: `Hi ${data.name}!\n\nThank you for applying to KL Tint Studio!\n\nWe have received your application for the ${data.job || "position"} and will review it shortly.\n\nBest regards,\nKL Tint Studio Team`,
+      };
 
-    if (emailResult.status === "rejected") {
-      console.error("[notify] Email failed:", emailResult.reason?.message);
+      const customerSubjects = {
+        booking: "Your Booking Confirmation - KL Tint Studio",
+        contact: "We Received Your Inquiry - KL Tint Studio",
+        career: "Application Received - KL Tint Studio",
+      };
+
+      await Promise.allSettled([
+        // Notify admin
+        resend.emails.send({
+          from: process.env.RESEND_FROM || "KL Tint Studio <noreply@kltintstudio.com>",
+          to: process.env.ADMIN_EMAIL,
+          subject,
+          text,
+        }),
+        // Confirmation to customer
+        resend.emails.send({
+          from: process.env.RESEND_FROM || "KL Tint Studio <noreply@kltintstudio.com>",
+          to: data.email,
+          subject: customerSubjects[type] || "Confirmation - KL Tint Studio",
+          text: customerConfirmationTexts[type] || `Thank you for contacting KL Tint Studio!`,
+        }),
+      ]);
     }
 
     return NextResponse.json({ success: true });
