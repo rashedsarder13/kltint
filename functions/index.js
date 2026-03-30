@@ -1,9 +1,6 @@
 const { onSchedule } = require("firebase-functions/v2/scheduler");
-const { defineSecret } = require("firebase-functions/params");
 const logger = require("firebase-functions/logger");
-
-const cronSecret = defineSecret("CRON_SECRET");
-const reminderBaseUrl = defineSecret("REMINDER_BASE_URL");
+const functions = require("firebase-functions");
 
 /**
  * Firebase Scheduler replacement for Vercel cron.
@@ -15,11 +12,11 @@ exports.sendAppointmentReminders = onSchedule(
     timeZone: "Asia/Kuala_Lumpur",
     region: "asia-southeast1",
     memory: "256MiB",
-    secrets: [cronSecret, reminderBaseUrl],
   },
   async () => {
-    const baseUrl = reminderBaseUrl.value();
-    const token = cronSecret.value();
+    const config = functions.config();
+    const baseUrl = config.reminder?.baseurl;
+    const token = config.cron?.secret;
 
     if (!baseUrl) {
       logger.error("Missing REMINDER_BASE_URL environment variable");
