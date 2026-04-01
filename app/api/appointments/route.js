@@ -6,7 +6,14 @@ import {
   parseTimeToMinutes,
   rangesOverlap,
 } from "@/lib/schedule-config";
-import { sendAdminEmail, sendCustomerEmail } from "@/lib/email-templates";
+import {
+  sendAdminEmail,
+  sendCustomerEmail,
+  sendCustomerSMS,
+  sendCustomerWhatsApp,
+  sendAdminSMS,
+  sendAdminWhatsApp,
+} from "@/lib/email-templates";
 
 function getRangeFromAppointment(data) {
   if (data.slotStart && data.slotEnd) {
@@ -176,20 +183,46 @@ export async function POST(request) {
       return { id: ref.id, ...payload };
     });
 
-    const [customerEmailResult, adminEmailResult] = await Promise.allSettled([
+    const [customerEmailResult, adminEmailResult, customerSmsResult, customerWhatsAppResult, adminSmsResult, adminWhatsAppResult] = await Promise.allSettled([
       sendCustomerEmail(appointmentData),
       sendAdminEmail(appointmentData),
+      sendCustomerSMS(appointmentData),
+      sendCustomerWhatsApp(appointmentData),
+      sendAdminSMS(appointmentData),
+      sendAdminWhatsApp(appointmentData),
     ]);
 
-    const emailStatus = {
-      customer:
-        customerEmailResult.status === "fulfilled"
-          ? "sent"
-          : `failed: ${customerEmailResult.reason?.message || "unknown error"}`,
-      admin:
-        adminEmailResult.status === "fulfilled"
-          ? "sent"
-          : `failed: ${adminEmailResult.reason?.message || "unknown error"}`,
+    const notificationStatus = {
+      email: {
+        customer:
+          customerEmailResult.status === "fulfilled"
+            ? "sent"
+            : `failed: ${customerEmailResult.reason?.message || "unknown error"}`,
+        admin:
+          adminEmailResult.status === "fulfilled"
+            ? "sent"
+            : `failed: ${adminEmailResult.reason?.message || "unknown error"}`,
+      },
+      sms: {
+        customer:
+          customerSmsResult.status === "fulfilled" && customerSmsResult.value?.success
+            ? "sent"
+            : `failed: ${customerSmsResult.reason?.message || customerSmsResult.value?.error || "unknown error"}`,
+        admin:
+          adminSmsResult.status === "fulfilled" && adminSmsResult.value?.success
+            ? "sent"
+            : `failed: ${adminSmsResult.reason?.message || adminSmsResult.value?.error || "unknown error"}`,
+      },
+      whatsapp: {
+        customer:
+          customerWhatsAppResult.status === "fulfilled" && customerWhatsAppResult.value?.success
+            ? "sent"
+            : `failed: ${customerWhatsAppResult.reason?.message || customerWhatsAppResult.value?.error || "unknown error"}`,
+        admin:
+          adminWhatsAppResult.status === "fulfilled" && adminWhatsAppResult.value?.success
+            ? "sent"
+            : `failed: ${adminWhatsAppResult.reason?.message || adminWhatsAppResult.value?.error || "unknown error"}`,
+      },
     };
 
     if (customerEmailResult.status === "rejected") {
@@ -198,11 +231,17 @@ export async function POST(request) {
     if (adminEmailResult.status === "rejected") {
       console.error("[appointments] admin email failed", adminEmailResult.reason);
     }
+    if (customerSmsResult.status === "rejected") {
+      console.error("[appointments] customer SMS failed", customerSmsResult.reason);
+    }
+    if (adminSmsResult.status === "rejected") {
+      console.error("[appointments] admin SMS failed", adminSmsResult.reason);
+    }
 
     return NextResponse.json({
       success: true,
       appointmentId: appointmentData.id,
-      emailStatus,
+      notificationStatus,
     });
   } catch (error) {
     if (error.message === "SLOT_TAKEN") {
